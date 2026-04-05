@@ -16,17 +16,17 @@ export class CreateStudentDto {
     @MinLength(6)
     password: string;
 
-    @ApiProperty({ example: false, required: false })
-    @IsOptional()
-    @IsBoolean()
-    isVerified?: boolean;
+    // @ApiProperty({ example: false, required: false })
+    // @IsOptional()
+    // @IsBoolean()
+    // isVerified?: boolean;
 
     @ApiProperty({ example: 'student' })
     @IsString()
     role: string;
 
-    @ApiProperty({ example: false, required: false })
-    @IsOptional()
-    @IsBoolean()
-    isDeleted?: boolean;
+    // @ApiProperty({ example: false, required: false })
+    // @IsOptional()
+    // @IsBoolean()
+    // isDeleted?: boolean;
 }
