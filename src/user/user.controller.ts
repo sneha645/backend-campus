@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Request } from "@nestjs/common";
+import { Body, Controller, Get, Post, Query, Request } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { UserService } from "./user.service";
 import { CreateStudentDto } from "src/common/student.dto";
@@ -48,5 +48,14 @@ export class UserController {
     @ApiResponse({ status: 500, description: 'Internal server error' })
     async login(@Body() authDto: AuthDto): Promise<any> {
         return this.userService.login(authDto);
+    }
+
+    @Get('verifyEmail')
+    @ApiOperation({ summary: 'Verify email' })
+    @ApiResponse({ status: 200, description: 'Email verified successfully' })
+    @ApiResponse({ status: 400, description: 'Invalid request' })
+    @ApiResponse({ status: 500, description: 'Internal server error' })
+    async verifyEmail(@Query('token') token: string): Promise<any> {
+        return this.userService.verifyEmail(token);
     }
 }

@@ -1,4 +1,4 @@
-import { ConflictException, HttpException, Injectable, InternalServerErrorException, UnauthorizedException } from "@nestjs/common";
+import { BadRequestException, ConflictException, HttpException, Injectable, InternalServerErrorException, UnauthorizedException } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { User } from "./user.entity";
 import * as bcrypt from 'bcrypt';
@@ -8,13 +8,15 @@ import { CreateFacultyDto } from "src/common/faculty.dto";
 import { CreateRecruiterDto } from "src/common/recruiter.dto";
 import { AuthDto } from "src/common/auth.dto";
 import { JwtService } from "@nestjs/jwt";
+import { MailService } from "src/mail/mail.service";
 
 @Injectable()
 export class UserService {
     constructor(
         @InjectRepository(User)
         private readonly userRepo: Repository<User>,
-        private readonly jwtService: JwtService
+        private readonly jwtService: JwtService,
+        private readonly mailService: MailService
     ) { }
 
 
@@ -42,7 +44,15 @@ export class UserService {
                 password: hashedPassword,
                 role,
             });
-            return user;
+
+            const token = this.jwtService.sign(
+                { email: user.email },
+                { expiresIn: '1d' }
+            )
+
+            await this.mailService.sendVerificationEmail(user.email, token);
+
+            return { message: 'Student registered successfully, Please verify your email' };
         } catch (error) {
             if (error instanceof ConflictException) {
                 throw error;
@@ -97,11 +107,44 @@ export class UserService {
         }
     }
 
+    async verifyEmail(token: string) {
+        try {
+            const decoded = this.jwtService.verify(token);
+            const user = await this.findByEmail(decoded.email);
+
+            if (!user) {
+                throw new BadRequestException('User not found');
+            }
+
+            if (user.isVerified) {
+                return { message: 'User already verified' };
+            }
+
+            user.isVerified = true;
+            await this.userRepo.save(user);
+
+            return { message: 'Email verified successfully' };
+        } catch (error) {
+            console.log("error", error);
+            if (error instanceof UnauthorizedException) {
+                throw error;
+            }
+            throw new InternalServerErrorException('Failed to verify email');
+        }
+    }
+
     async login(authDto: AuthDto): Promise<any> {
         try {
             const { email, password } = authDto;
+            console.log("email", email);
+            console.log("password", password);
 
             const user = await this.findByEmail(email);
+            console.log("user", user);
+
+            if (user && !user.isVerified) {
+                throw new BadRequestException('User not verified, Please verify your email');
+            }
 
             if (!user) {
                 throw new UnauthorizedException('Invalid credentials');
