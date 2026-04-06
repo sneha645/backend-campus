@@ -33,11 +33,14 @@ export class UserService {
     async createStudent(createStudentDto: CreateStudentDto): Promise<any> {
         try {
             const { name, email, password, role } = createStudentDto;
+
             const existingUser = await this.findByEmail(email);
+
             if (existingUser) {
                 throw new ConflictException('User already exists');
             }
             const hashedPassword = await bcrypt.hash(password, 10);
+
             const user = await this.create({
                 name,
                 email,
@@ -45,10 +48,12 @@ export class UserService {
                 role,
             });
 
-            const token = this.jwtService.sign(
-                { email: user.email },
-                { expiresIn: '1d' }
-            )
+            const token = this.jwtService.sign({
+                email: user.email,
+                role: user.role,
+            });
+
+            await this.userRepo.save(user);
 
             await this.mailService.sendVerificationEmail(user.email, token);
 
@@ -110,6 +115,7 @@ export class UserService {
     async verifyEmail(token: string) {
         try {
             const decoded = this.jwtService.verify(token);
+
             const user = await this.findByEmail(decoded.email);
 
             if (!user) {
@@ -136,11 +142,8 @@ export class UserService {
     async login(authDto: AuthDto): Promise<any> {
         try {
             const { email, password } = authDto;
-            console.log("email", email);
-            console.log("password", password);
 
             const user = await this.findByEmail(email);
-            console.log("user", user);
 
             if (user && !user.isVerified) {
                 throw new BadRequestException('User not verified, Please verify your email');
@@ -154,11 +157,16 @@ export class UserService {
             if (!isPasswordValid) {
                 throw new UnauthorizedException('Invalid credentials');
             }
+
             const payload = { id: user.id, email: user.email, role: user.role };
 
             const token = this.jwtService.sign(payload);
 
-            return { message: "Login successful", user, token };
+            return {
+                message: "Login successful",
+                user,
+                token
+            };
         } catch (error) {
             console.log("error", error);
             if (error instanceof UnauthorizedException) {
