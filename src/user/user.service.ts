@@ -142,6 +142,8 @@ export class UserService {
     async login(authDto: AuthDto): Promise<any> {
         try {
             const { email, password } = authDto;
+            console.log("email", email);
+            console.log("password", password);
 
             const user = await this.findByEmail(email);
 
