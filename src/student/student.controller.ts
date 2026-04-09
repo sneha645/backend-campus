@@ -1,13 +1,15 @@
-import { Body, Controller, Post, Request } from '@nestjs/common';
+import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { StudentService } from './student.service';
 import { UploadProjectDto } from 'src/common/uploadProject.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('student')
 @Controller('student')
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
+  @UseGuards(AuthGuard('jwt'))
   @Post('uploadProject')
   @ApiOperation({ summary: 'Upload a new project' })
   @ApiResponse({ status: 201, description: 'Project uploaded successfully' })
@@ -18,6 +20,7 @@ export class StudentController {
     @Body() uploadProjectDto: UploadProjectDto,
     @Request() req: any,
   ): Promise<any> {
+    console.log("req", req.user.sub)
     return this.studentService.uploadProject(uploadProjectDto, req.user.sub);
   }
 }

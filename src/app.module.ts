@@ -7,6 +7,8 @@ import { UserModule } from './user/user.module';
 
 import { SetupModule } from './setup/setup.module';
 import { StudentModule } from './student/student.module';
+import { AuthModule } from './auth/auth.module';
+import { UploadProject } from './student/entities/uploadProject';
 
 
 @Module({
@@ -25,12 +27,14 @@ import { StudentModule } from './student/student.module';
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
         autoLoadEntities: true,
+        entities: [UploadProject],
         synchronize: true,
       })
     }),
     UserModule,
     SetupModule,
-    StudentModule
+    StudentModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
