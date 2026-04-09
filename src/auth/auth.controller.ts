@@ -1,15 +1,15 @@
 import { Body, Controller, Get, Post, Query, Request } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { UserService } from './auth.service';
 import { CreateStudentDto } from 'src/common/student.dto';
 import { CreateFacultyDto } from 'src/common/faculty.dto';
 import { CreateRecruiterDto } from 'src/common/recruiter.dto';
 import { AuthDto } from 'src/common/auth.dto';
+import { AuthService } from './auth.service';
 
 @ApiTags('user')
 @Controller('user')
-export class UserController {
-  constructor(private readonly userService: UserService) {}
+export class AuthController {
+  constructor(private readonly authService: AuthService) {}
 
   @Post('registerStudent')
   @ApiOperation({ summary: 'Register a new student' })
@@ -21,7 +21,7 @@ export class UserController {
     @Body() createStudentDto: CreateStudentDto,
     @Request() req: any,
   ): Promise<any> {
-    return this.userService.createStudent(createStudentDto);
+    return this.authService.createStudent(createStudentDto);
   }
 
   @Post('registerFaculty')
@@ -34,7 +34,7 @@ export class UserController {
     @Body() createFacultyDto: CreateFacultyDto,
     @Request() req: any,
   ): Promise<any> {
-    return this.userService.createFaculty(createFacultyDto);
+    return this.authService.createFaculty(createFacultyDto);
   }
 
   @Post('registerRecruiter ')
@@ -50,7 +50,7 @@ export class UserController {
     @Body() createRecruiterDto: CreateRecruiterDto,
     @Request() req: any,
   ): Promise<any> {
-    return this.userService.createRecruiter(createRecruiterDto);
+    return this.authService.createRecruiter(createRecruiterDto);
   }
 
   @Post('login')
@@ -59,7 +59,7 @@ export class UserController {
   @ApiResponse({ status: 401, description: 'Invalid credentials' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async login(@Body() authDto: AuthDto): Promise<any> {
-    return this.userService.login(authDto);
+    return this.authService.login(authDto);
   }
 
   @Get('verifyEmail')
@@ -68,6 +68,6 @@ export class UserController {
   @ApiResponse({ status: 400, description: 'Invalid request' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async verifyEmail(@Query('token') token: string): Promise<any> {
-    return this.userService.verifyEmail(token);
+    return this.authService.verifyEmail(token);
   }
 }

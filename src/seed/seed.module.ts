@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { SetupService } from './seed.service';
-import { UserModule } from 'src/auth/auth.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
-  imports: [UserModule],
+  imports: [AuthModule],
   providers: [SetupService],
 })
 export class SetupModule {}

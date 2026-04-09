@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { UserModule } from './auth/auth.module';
+import { AuthModule } from './auth/auth.module';
 import { SetupModule } from './seed/seed.module';
 import { StudentModule } from './student/student.module';
 import { UploadProject } from './entities/uploadProject';
@@ -28,7 +28,7 @@ import { UploadProject } from './entities/uploadProject';
         synchronize: true,
       }),
     }),
-    UserModule,
+    AuthModule,
     SetupModule,
     StudentModule,
   ],

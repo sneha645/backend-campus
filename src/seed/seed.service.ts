@@ -1,11 +1,11 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 
 import * as bcrypt from 'bcrypt';
-import { UserService } from 'src/auth/auth.service';
+import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class SetupService implements OnModuleInit {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly authService: AuthService) {}
 
   async onModuleInit() {
     await this.createAdmin();
@@ -23,7 +23,7 @@ export class SetupService implements OnModuleInit {
       return;
     }
 
-    const existing = await this.userService.findByEmail(email);
+    const existing = await this.authService.findByEmail(email);
     if (existing) {
       console.log('Admin already exists');
       return;
@@ -31,7 +31,7 @@ export class SetupService implements OnModuleInit {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await this.userService.create({
+    await this.authService.create({
       name,
       email,
       password: hashedPassword,
