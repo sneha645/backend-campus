@@ -3,18 +3,15 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { UserModule } from './user/user.module';
-
-import { SetupModule } from './setup/setup.module';
+import { UserModule } from './auth/auth.module';
+import { SetupModule } from './seed/seed.module';
 import { StudentModule } from './student/student.module';
-import { AuthModule } from './auth/auth.module';
-import { UploadProject } from './student/entities/uploadProject';
-
+import { UploadProject } from './entities/uploadProject';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true
+      isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -29,14 +26,13 @@ import { UploadProject } from './student/entities/uploadProject';
         autoLoadEntities: true,
         entities: [UploadProject],
         synchronize: true,
-      })
+      }),
     }),
     UserModule,
     SetupModule,
     StudentModule,
-    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
