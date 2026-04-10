@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Query, Request } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  Request,
+  Res,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateStudentDto } from 'src/dtos/student.dto';
 import { CreateRecruiterDto } from 'src/dtos/recruiter.dto';
@@ -58,8 +66,20 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'Login successful' })
   @ApiResponse({ status: 401, description: 'Invalid credentials' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
-  async login(@Body() authDto: AuthDto): Promise<any> {
-    return this.authService.login(authDto);
+  async login(
+    @Body() authDto: AuthDto,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<any> {
+    const result = this.authService.login(authDto);
+    res.cookie('token', result.token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+    return {
+      data: result,
+    };
   }
 
   @Get('verifyEmail')
