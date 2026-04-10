@@ -51,14 +51,14 @@ export class Project {
   @ManyToOne(() => User, (user) => user.studentProjects, {
     onDelete: "CASCADE",
   })
-  @JoinColumn({ name: "user_id" })
+  @JoinColumn({ name: "student_id" })
   student!: User;
 
   @ManyToOne(() => User, (user) => user.mentorProjects, {
     nullable: true,
     onDelete: "SET NULL",
   })
-  @JoinColumn({ name: "user_id" })
+  @JoinColumn({ name: "mentor_id" })
   mentor!: User;
 
   @CreateDateColumn()
