@@ -20,7 +20,6 @@ export class StudentController {
     @Body() uploadProjectDto: UploadProjectDto,
     @Request() req: any,
   ): Promise<any> {
-    
     return this.studentService.uploadProject(uploadProjectDto, req.user.userId);
   }
 }
