@@ -6,8 +6,8 @@ import { CreateRecruiterDto } from 'src/dtos/recruiter.dto';
 import { AuthDto } from 'src/dtos/auth.dto';
 import { AuthService } from './auth.service';
 
-@ApiTags('user')
-@Controller('user')
+@ApiTags('auth')
+@Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 

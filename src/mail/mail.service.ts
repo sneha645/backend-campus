@@ -15,7 +15,7 @@ export class MailService {
 
 
     async sendVerificationEmail(email: string, token: string) {
-        const url = `http://localhost:3000/user/verifyEmail?token=${token}`;
+        const url = `http://localhost:3000/auth/verifyEmail?token=${token}`;
 
         const html = `
       <h2>Welcome 🎉</h2>

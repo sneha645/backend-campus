@@ -88,7 +88,19 @@ export class AuthService {
         password: hashedPassword,
         role,
       });
-      return user;
+
+      const token = this.jwtService.sign({
+        email: user.email,
+        role: user.role,
+      });
+
+      await this.userRepo.save(user);
+
+      await this.mailService.sendVerificationEmail(user.email, token);
+
+      return {
+        message: 'Faculty registered successfully, Please verify your email',
+      };
     } catch (error) {
       if (error instanceof ConflictException) {
         throw error;
@@ -150,7 +162,7 @@ export class AuthService {
   async login(authDto: AuthDto): Promise<any> {
     try {
       const { email, password } = authDto;
-      console.log("Login Start")
+      console.log('Login Start');
 
       const user = await this.findByEmail(email);
 
