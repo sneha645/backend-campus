@@ -171,7 +171,7 @@ export class AuthService {
 
       const payload = {
         email: user.email,
-        sub: user.id,
+        sub: user.user_id,
       };
 
       const token = this.jwtService.sign(payload);

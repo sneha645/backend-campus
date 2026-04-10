@@ -6,7 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { SetupModule } from './seed/seed.module';
 import { StudentModule } from './student/student.module';
-import { UploadProject } from './entities/project.entity';
+import { Project } from './entities/project.entity';
 
 @Module({
   imports: [
@@ -24,7 +24,7 @@ import { UploadProject } from './entities/project.entity';
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
         autoLoadEntities: true,
-        entities: [UploadProject],
+        entities: [Project],
         synchronize: true,
       }),
     }),
