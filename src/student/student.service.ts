@@ -10,6 +10,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Project } from 'src/entities/project.entity';
 import { User } from 'src/entities/user.entity';
+import { UploadInternshipDto } from 'src/dtos/internship.dto';
 
 @Injectable()
 export class StudentService {
@@ -26,6 +27,8 @@ export class StudentService {
     studentId: string,
   ): Promise<any> {
     try {
+      const { mentorId, ...projectData } = uploadProjectDto;
+
       const student = await this.userRepo.findOne({
         where: { user_id: studentId },
       });
@@ -34,12 +37,69 @@ export class StudentService {
         throw new NotFoundException('Student not found');
       }
 
-      const project = this.projectRepo.create({
-        ...uploadProjectDto,
-        student: student,
+      const mentor = await this.userRepo.findOne({
+        where: { user_id: mentorId },
       });
 
-      return await this.projectRepo.save(project);
+      if(!mentor) {
+        throw new NotFoundException('Mentor not found')
+      }
+
+      const project = this.projectRepo.create({
+        ...projectData,
+        student: student,
+        mentor: mentor,
+      });
+
+      const response = await this.projectRepo.save(project);
+
+      return {
+        message: 'Project uploaded successfully',
+        project: response,
+      };
+    } catch (error) {
+      if (error instanceof ConflictException) {
+        throw error;
+      }
+      throw new InternalServerErrorException('Failed to upload project');
+    }
+  }
+
+  async uploadInternship(
+    uploadInternshipDto: UploadInternshipDto,
+    studentId: string,
+  ): Promise<any> {
+try {
+      const { mentorId, ...internshipData } = uploadInternshipDto;
+
+      const student = await this.userRepo.findOne({
+        where: { user_id: studentId },
+      });
+
+      if (!student) {
+        throw new NotFoundException('Student not found');
+      }
+
+      const mentor = await this.userRepo.findOne({
+        where: { user_id: mentorId },
+      });
+
+      if(!mentor) {
+        throw new NotFoundException('Mentor not found')
+      }
+
+      // const project = this.projectRepo.create({
+      //   ...projectData,
+      //   student: student,
+      //   mentor: mentor,
+      // });
+
+      // const response = await this.projectRepo.save(project);
+
+      // return {
+      //   message: 'Project uploaded successfully',
+      //   project: response,
+      // };
     } catch (error) {
       if (error instanceof ConflictException) {
         throw error;

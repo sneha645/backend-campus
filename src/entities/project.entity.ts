@@ -48,18 +48,19 @@ export class Project {
   })
   status!: ProjectStatus;
 
-  @ManyToOne(() => User, (user) => user.studentProjects, {
-    onDelete: "CASCADE",
-  })
-  @JoinColumn({ name: "student_id" })
-  student!: User;
-
   @ManyToOne(() => User, (user) => user.mentorProjects, {
     nullable: true,
     onDelete: "SET NULL",
   })
   @JoinColumn({ name: "mentor_id" })
   mentor!: User;
+
+  @ManyToOne(() => User, (user) => user.studentProjects, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "student_id" })
+  student!: User;
+
 
   @CreateDateColumn()
   createdAt!: Date;
