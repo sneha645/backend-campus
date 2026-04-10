@@ -11,11 +11,12 @@ import { User } from '../entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateStudentDto } from 'src/dtos/student.dto';
-import { CreateFacultyDto } from 'src/dtos/faculty.dto';
+
 import { CreateRecruiterDto } from 'src/dtos/recruiter.dto';
 import { AuthDto } from 'src/dtos/auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { MailService } from 'src/mail/mail.service';
+import { createMentorDto } from 'src/dtos/mentor.dto';
 
 @Injectable()
 export class AuthService {
@@ -45,6 +46,7 @@ export class AuthService {
       if (existingUser) {
         throw new ConflictException('User already exists');
       }
+
       const hashedPassword = await bcrypt.hash(password, 10);
 
       const user = await this.create({
@@ -74,9 +76,9 @@ export class AuthService {
     }
   }
 
-  async createFaculty(createFacultyDto: CreateFacultyDto): Promise<any> {
+  async createMentor(createMentorDto: createMentorDto): Promise<any> {
     try {
-      const { name, email, password, role } = createFacultyDto;
+      const { name, email, password, role } = createMentorDto;
       const existingUser = await this.findByEmail(email);
       if (existingUser) {
         throw new ConflictException('User already exists');

@@ -1,12 +1,12 @@
 import { Body, Controller, Get, Post, Query, Request } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateStudentDto } from 'src/dtos/student.dto';
-import { CreateFacultyDto } from 'src/dtos/faculty.dto';
 import { CreateRecruiterDto } from 'src/dtos/recruiter.dto';
 import { AuthDto } from 'src/dtos/auth.dto';
 import { AuthService } from './auth.service';
+import { createMentorDto } from 'src/dtos/mentor.dto';
 
-@ApiTags('auth')
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -31,10 +31,10 @@ export class AuthController {
   @ApiResponse({ status: 409, description: 'Faculty already exists' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async registerFaculty(
-    @Body() createFacultyDto: CreateFacultyDto,
+    @Body() createMentorDto: createMentorDto,
     @Request() req: any,
   ): Promise<any> {
-    return this.authService.createFaculty(createFacultyDto);
+    return this.authService.createMentor(createMentorDto);
   }
 
   @Post('registerRecruiter ')

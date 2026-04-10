@@ -11,12 +11,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Project } from 'src/entities/project.entity';
 import { User } from 'src/entities/user.entity';
 import { UploadInternshipDto } from 'src/dtos/internship.dto';
+import { Internship } from 'src/entities/internship.entity';
 
 @Injectable()
 export class StudentService {
   constructor(
     @InjectRepository(Project)
     private readonly projectRepo: Repository<Project>,
+
+    @InjectRepository(Internship)
+    private readonly internshipRepo: Repository<Internship>,
 
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
@@ -41,8 +45,8 @@ export class StudentService {
         where: { user_id: mentorId },
       });
 
-      if(!mentor) {
-        throw new NotFoundException('Mentor not found')
+      if (!mentor) {
+        throw new NotFoundException('Mentor not found');
       }
 
       const project = this.projectRepo.create({
@@ -69,7 +73,7 @@ export class StudentService {
     uploadInternshipDto: UploadInternshipDto,
     studentId: string,
   ): Promise<any> {
-try {
+    try {
       const { mentorId, ...internshipData } = uploadInternshipDto;
 
       const student = await this.userRepo.findOne({
@@ -84,22 +88,22 @@ try {
         where: { user_id: mentorId },
       });
 
-      if(!mentor) {
-        throw new NotFoundException('Mentor not found')
+      if (!mentor) {
+        throw new NotFoundException('Mentor not found');
       }
 
-      // const project = this.projectRepo.create({
-      //   ...projectData,
-      //   student: student,
-      //   mentor: mentor,
-      // });
+      const internship = this.internshipRepo.create({
+        ...internshipData,
+        student: student,
+        mentor: mentor,
+      });
 
-      // const response = await this.projectRepo.save(project);
+      const response = await this.internshipRepo.save(internship);
 
-      // return {
-      //   message: 'Project uploaded successfully',
-      //   project: response,
-      // };
+      return {
+        message: 'Internship uploaded successfully',
+        project: response,
+      };
     } catch (error) {
       if (error instanceof ConflictException) {
         throw error;
