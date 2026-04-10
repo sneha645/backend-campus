@@ -7,6 +7,8 @@ import { AuthModule } from './auth/auth.module';
 import { SetupModule } from './seed/seed.module';
 import { StudentModule } from './student/student.module';
 import { Project } from './entities/project.entity';
+import { Internship } from './entities/internship.entity';
+import { User } from './entities/user.entity';
 
 @Module({
   imports: [
@@ -24,7 +26,7 @@ import { Project } from './entities/project.entity';
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
         autoLoadEntities: true,
-        entities: [Project],
+        entities: [Project, Internship, User],
         synchronize: true,
       }),
     }),

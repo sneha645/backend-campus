@@ -7,6 +7,7 @@ import {
   Request,
   Res,
 } from '@nestjs/common';
+import type { Response } from 'express';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateStudentDto } from 'src/dtos/student.dto';
 import { CreateRecruiterDto } from 'src/dtos/recruiter.dto';
@@ -70,7 +71,7 @@ export class AuthController {
     @Body() authDto: AuthDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<any> {
-    const result = this.authService.login(authDto);
+    const result = await this.authService.login(authDto);
     res.cookie('token', result.token, {
       httpOnly: true,
       secure: true,
