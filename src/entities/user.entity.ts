@@ -3,7 +3,6 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Project } from "./project.entity";
 
 @Entity()
-@Unique(["email"])
 export class User {
     @PrimaryGeneratedColumn('uuid')
     @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000' })
@@ -33,8 +32,11 @@ export class User {
     @ApiProperty({ example: false })
     isDeleted!: boolean;
 
-    @OneToMany(() => Project, (project) => project.user)
-    projects!: Project[];
+    @OneToMany(() => Project, (project) => project.student)
+    studentProjects!: Project[];
+
+    @OneToMany(() => Project, (project) => project.mentor)
+    mentorProjects!: Project[];
 
     @CreateDateColumn()
     createdAt!: Date;
