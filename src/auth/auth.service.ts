@@ -150,8 +150,7 @@ export class AuthService {
   async login(authDto: AuthDto): Promise<any> {
     try {
       const { email, password } = authDto;
-      console.log('email', email);
-      console.log('password', password);
+      console.log("Login Start")
 
       const user = await this.findByEmail(email);
 
@@ -170,7 +169,10 @@ export class AuthService {
         throw new UnauthorizedException('Invalid credentials');
       }
 
-      const payload = { id: user.id, email: user.email, role: user.role };
+      const payload = {
+        email: user.email,
+        sub: user.id,
+      };
 
       const token = this.jwtService.sign(payload);
 
