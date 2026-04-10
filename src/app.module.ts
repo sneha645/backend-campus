@@ -6,7 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { SetupModule } from './seed/seed.module';
 import { StudentModule } from './student/student.module';
-import { UploadProject } from './entities/uploadProject';
+import { UploadProject } from './entities/project.entity';
 
 @Module({
   imports: [

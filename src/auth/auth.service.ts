@@ -10,10 +10,10 @@ import { Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateStudentDto } from 'src/common/student.dto';
-import { CreateFacultyDto } from 'src/common/faculty.dto';
-import { CreateRecruiterDto } from 'src/common/recruiter.dto';
-import { AuthDto } from 'src/common/auth.dto';
+import { CreateStudentDto } from 'src/dtos/student.dto';
+import { CreateFacultyDto } from 'src/dtos/faculty.dto';
+import { CreateRecruiterDto } from 'src/dtos/recruiter.dto';
+import { AuthDto } from 'src/dtos/auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { MailService } from 'src/mail/mail.service';
 

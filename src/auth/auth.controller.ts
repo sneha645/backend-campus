@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Post, Query, Request } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CreateStudentDto } from 'src/common/student.dto';
-import { CreateFacultyDto } from 'src/common/faculty.dto';
-import { CreateRecruiterDto } from 'src/common/recruiter.dto';
-import { AuthDto } from 'src/common/auth.dto';
+import { CreateStudentDto } from 'src/dtos/student.dto';
+import { CreateFacultyDto } from 'src/dtos/faculty.dto';
+import { CreateRecruiterDto } from 'src/dtos/recruiter.dto';
+import { AuthDto } from 'src/dtos/auth.dto';
 import { AuthService } from './auth.service';
 
 @ApiTags('user')

@@ -1,14 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { UploadProjectDto } from 'src/common/uploadProject.dto';
+import { UploadProjectDto } from 'src/dtos/project.dto';
 import { Repository } from 'typeorm';
-import { UploadProject } from '../entities/uploadProject';
+
 import { InjectRepository } from '@nestjs/typeorm';
+import { Project } from 'src/entities/project.entity';
 
 @Injectable()
 export class StudentService {
   constructor(
-    @InjectRepository(UploadProject)
-    private readonly uploadRepo: Repository<UploadProject>,
+    @InjectRepository(Project)
+    private readonly uploadRepo: Repository<Project>,
   ) {}
 
   async uploadProject(
