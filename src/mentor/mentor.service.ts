@@ -17,4 +17,10 @@ export class MentorService {
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
   ) {}
+
+  async getAllMentors() {
+    return this.userRepo.find({
+      where: { role: 'mentor' },
+    });
+  }
 }

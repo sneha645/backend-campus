@@ -79,7 +79,7 @@ export class AuthController {
       maxAge: 24 * 60 * 60 * 1000,
     });
     return {
-      data: result,
+      result,
     };
   }
 

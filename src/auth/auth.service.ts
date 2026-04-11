@@ -127,6 +127,7 @@ export class AuthService {
         password: hashedPassword,
         role,
       });
+
       const token = this.jwtService.sign({
         email: user.email,
         role: user.role,
@@ -134,7 +135,8 @@ export class AuthService {
 
       await this.userRepo.save(user);
 
-      await this.mailService.sendAdminApprovalRequest(user.email, token);
+      await this.mailService.sendVerificationEmail(user.email, token);
+      await this.mailService.sendAdminApprovalRequest(user.email);
 
       return {
         message: 'Recruiter registered successfully, Please verify your email',
@@ -162,6 +164,11 @@ export class AuthService {
       }
 
       user.isVerified = true;
+      if (user.role === 'recruiter') {
+        user.status = 'pending';
+      } else {
+        user.status = 'approved';
+      }
       await this.userRepo.save(user);
 
       return { message: 'Email verified successfully' };
@@ -180,6 +187,12 @@ export class AuthService {
       console.log('Login Start');
 
       const user = await this.findByEmail(email);
+
+      if (user?.status === 'pending') {
+        throw new BadRequestException(
+          'User not approved, Please wait for approval',
+        );
+      }
 
       if (user && !user.isVerified) {
         throw new BadRequestException(

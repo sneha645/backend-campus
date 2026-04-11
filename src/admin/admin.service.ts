@@ -27,4 +27,10 @@ export class AdminService {
     await this.userRepo.save(user);
     return { message: 'Recruiter approved successfully' };
   }
+
+  async getPendingRecruiters() {
+    return this.userRepo.find({
+      where: { role: 'recruiter', status: 'pending' },
+    });
+  }
 }
