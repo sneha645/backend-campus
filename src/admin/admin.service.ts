@@ -17,4 +17,14 @@ export class AdminService {
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
   ) {}
+
+  async approveRecruiter(id: string) {
+    const user = await this.userRepo.findOne({ where: { user_id: id } });
+    if (!user) {
+      throw new Error('User not found');
+    }
+    user.status = 'approved';
+    await this.userRepo.save(user);
+    return { message: 'Recruiter approved successfully' };
+  }
 }

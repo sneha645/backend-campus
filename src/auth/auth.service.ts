@@ -114,10 +114,12 @@ export class AuthService {
   async createRecruiter(createRecruiterDto: CreateRecruiterDto): Promise<any> {
     try {
       const { name, email, password, role } = createRecruiterDto;
+
       const existingUser = await this.findByEmail(email);
       if (existingUser) {
         throw new ConflictException('User already exists');
       }
+
       const hashedPassword = await bcrypt.hash(password, 10);
       const user = await this.create({
         name,
@@ -125,7 +127,18 @@ export class AuthService {
         password: hashedPassword,
         role,
       });
-      return user;
+      const token = this.jwtService.sign({
+        email: user.email,
+        role: user.role,
+      });
+
+      await this.userRepo.save(user);
+
+      await this.mailService.sendAdminApprovalRequest(user.email, token);
+
+      return {
+        message: 'Recruiter registered successfully, Please verify your email',
+      };
     } catch (error) {
       if (error instanceof ConflictException) {
         throw error;
