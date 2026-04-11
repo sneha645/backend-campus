@@ -138,7 +138,8 @@ export class AuthService {
       await this.userRepo.save(user);
 
       await this.mailService.sendVerificationEmail(user.email, token);
-      await this.mailService.sendAdminApprovalRequest(user.email);
+      const adminMail = process.env.ADMIN_EMAIL!;
+      await this.mailService.sendAdminApprovalRequest(adminMail);
 
       return {
         message: 'Recruiter registered successfully, Please verify your email',
@@ -166,7 +167,7 @@ export class AuthService {
       }
 
       user.isVerified = true;
-      if (user.role === 'recruiter') {
+      if (user.role === 'Recruiter') {
         user.status = 'pending';
       } else {
         user.status = 'approved';
