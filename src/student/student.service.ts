@@ -32,6 +32,7 @@ export class StudentService {
     studentId: string,
   ): Promise<any> {
     try {
+      console.log("working")
       const { mentorId, ...projectData } = uploadProjectDto;
 
       const student = await this.userRepo.findOne({
@@ -58,6 +59,7 @@ export class StudentService {
       });
 
       const response = await this.projectRepo.save(project);
+      console.log("response", response)
 
       return {
         message: 'Project uploaded successfully',
