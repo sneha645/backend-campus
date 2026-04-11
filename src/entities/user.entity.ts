@@ -53,6 +53,10 @@ export class User {
   })
   status!: 'pending' | 'approved' | 'rejected';
 
+  @Column({nullable: true})
+  @ApiProperty({ example: 'Google' })
+  companyName!: string;
+
   @CreateDateColumn()
   createdAt!: Date;
 

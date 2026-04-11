@@ -46,7 +46,7 @@ export class AuthController {
     return this.authService.createMentor(createMentorDto);
   }
 
-  @Post('registerRecruiter ')
+  @Post('registerRecruiter')
   @ApiOperation({ summary: 'Register a new recruiter ' })
   @ApiResponse({
     status: 201,
