@@ -9,6 +9,9 @@ import { StudentModule } from './student/student.module';
 import { Project } from './entities/project.entity';
 import { Internship } from './entities/internship.entity';
 import { User } from './entities/user.entity';
+import { AdminModule } from './admin/admin.module';
+import { MentorModule } from './mentor/mentor.module';
+import { RecruiterModule } from './recruiter/recruiter.module';
 
 @Module({
   imports: [
@@ -33,6 +36,9 @@ import { User } from './entities/user.entity';
     AuthModule,
     SetupModule,
     StudentModule,
+    RecruiterModule,
+    MentorModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],
