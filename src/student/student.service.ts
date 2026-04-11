@@ -32,7 +32,7 @@ export class StudentService {
     studentId: string,
   ): Promise<any> {
     try {
-      console.log("working")
+      console.log('working');
       const { mentorId, ...projectData } = uploadProjectDto;
 
       const student = await this.userRepo.findOne({
@@ -55,11 +55,11 @@ export class StudentService {
         ...projectData,
         student: student,
         mentor: mentor,
-        imageUrl: image ? `uploads/${image.filename}` : undefined,
+        imageUrl: image ? `/uploads/images/${image.filename}` : undefined,
       });
 
       const response = await this.projectRepo.save(project);
-      console.log("response", response)
+      console.log('response', response);
 
       return {
         message: 'Project uploaded successfully',
@@ -75,9 +75,11 @@ export class StudentService {
 
   async uploadInternship(
     uploadInternshipDto: UploadInternshipDto,
+    certificateImage: Express.Multer.File,
     studentId: string,
   ): Promise<any> {
     try {
+      console.log('working');
       const { mentorId, ...internshipData } = uploadInternshipDto;
 
       const student = await this.userRepo.findOne({
@@ -100,19 +102,49 @@ export class StudentService {
         ...internshipData,
         student: student,
         mentor: mentor,
+        certificateImage: certificateImage
+          ? `uploads/images/${certificateImage.filename}`
+          : undefined,
       });
 
       const response = await this.internshipRepo.save(internship);
+      console.log('response', response);
 
       return {
         message: 'Internship uploaded successfully',
-        project: response,
+        internship: response,
       };
     } catch (error) {
       if (error instanceof ConflictException) {
         throw error;
       }
       throw new InternalServerErrorException('Failed to upload project');
+    }
+  }
+
+  async getMyProjects(studentId: string): Promise<any> {
+    try {
+      console.log('working');
+      const projects = await this.projectRepo.find({
+        where: { student: { user_id: studentId } },
+      });
+      console.log('projects', projects);
+      return projects;
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to get projects');
+    }
+  }
+
+  async getMyInternships(studentId: string): Promise<any> {
+    try {
+      console.log('working');
+      const internships = await this.internshipRepo.find({
+        where: { student: { user_id: studentId } },
+      });
+      console.log('internships', internships);
+      return internships;
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to get internships');
     }
   }
 }

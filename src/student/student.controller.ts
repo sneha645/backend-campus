@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Post,
   Request,
   UploadedFile,
@@ -41,18 +42,40 @@ export class StudentController {
 
   @UseGuards(JwtAuthGuard)
   @Post('uploadInternship')
-  @UseInterceptors(FileInterceptor('file', multerConfig))
+  @UseInterceptors(FileInterceptor('certificateImage', multerConfig))
   @ApiOperation({ summary: 'Upload a new internship' })
   @ApiResponse({ status: 201, description: 'Internship uploaded successfully' })
   @ApiResponse({ status: 400, description: 'Invalid request' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async uploadInternship(
+    @UploadedFile() certificateImage: Express.Multer.File,
     @Body() uploadInternshipDto: UploadInternshipDto,
     @Request() req: any,
   ): Promise<any> {
     return this.studentService.uploadInternship(
       uploadInternshipDto,
+      certificateImage,
       req.user.userId,
     );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('getMyProjects')
+  @ApiOperation({ summary: 'Get all projects' })
+  @ApiResponse({ status: 201, description: 'Projects fetched successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async getMyProjects(@Request() req: any): Promise<any> {
+    return this.studentService.getMyProjects(req.user.userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('getMyInternships')
+  @ApiOperation({ summary: 'Get all internships' })
+  @ApiResponse({ status: 201, description: 'Internships fetched successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async getMyInternships(@Request() req: any): Promise<any> {
+    return this.studentService.getMyInternships(req.user.userId);
   }
 }

@@ -1,4 +1,10 @@
-import { IsString, IsNotEmpty, IsOptional, IsUrl, IsDateString } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsUrl,
+  IsDateString,
+} from 'class-validator';
 
 export class UploadInternshipDto {
   @IsString()
@@ -28,10 +34,6 @@ export class UploadInternshipDto {
   @IsUrl()
   @IsOptional()
   projectUrl: string;
-
-  @IsUrl()
-  @IsOptional()
-  certificateUrl: string;
 
   @IsString()
   @IsNotEmpty()

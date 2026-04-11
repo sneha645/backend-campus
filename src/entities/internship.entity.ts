@@ -39,7 +39,7 @@ export class Internship {
   projectUrl!: string;
 
   @Column({ nullable: true })
-  certificateUrl!: string;
+  certificateImage!: string;
 
   @Column({
     type: 'enum',
