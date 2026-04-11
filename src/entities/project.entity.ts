@@ -61,6 +61,9 @@ export class Project {
   @JoinColumn({ name: "student_id" })
   student!: User;
 
+  @Column({ nullable: true })
+  imageUrl!: string;
+
 
   @CreateDateColumn()
   createdAt!: Date;

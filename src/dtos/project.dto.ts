@@ -19,11 +19,15 @@ export class UploadProjectDto {
 
   @IsString()
   @IsOptional()
-  technologies: string;
+  technologies?: string;
 
   @IsUrl()
   @IsOptional()
-  projectUrl: string;
+  projectUrl?: string;
+
+  @IsUrl()
+  @IsOptional()
+  imageUrl?: string;
 
   @IsString()
   @IsNotEmpty()
