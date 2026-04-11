@@ -28,6 +28,7 @@ export class StudentService {
 
   async uploadProject(
     uploadProjectDto: UploadProjectDto,
+    image: Express.Multer.File,
     studentId: string,
   ): Promise<any> {
     try {
@@ -53,6 +54,7 @@ export class StudentService {
         ...projectData,
         student: student,
         mentor: mentor,
+        imageUrl: image ? `uploads/${image.filename}` : undefined,
       });
 
       const response = await this.projectRepo.save(project);

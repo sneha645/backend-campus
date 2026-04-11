@@ -101,7 +101,7 @@ export class AuthService {
       await this.mailService.sendVerificationEmail(user.email, token);
 
       return {
-        message: 'Faculty registered successfully, Please verify your email',
+        message: 'Mentor registered successfully, Please verify your email',
       };
     } catch (error) {
       if (error instanceof ConflictException) {

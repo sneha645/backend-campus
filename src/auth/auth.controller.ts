@@ -33,13 +33,13 @@ export class AuthController {
     return this.authService.createStudent(createStudentDto);
   }
 
-  @Post('registerFaculty')
-  @ApiOperation({ summary: 'Register a new faculty' })
-  @ApiResponse({ status: 201, description: 'Faculty registered successfully' })
+  @Post('registerMentor')
+  @ApiOperation({ summary: 'Register a new mentor' })
+  @ApiResponse({ status: 201, description: 'Mentor registered successfully' })
   @ApiResponse({ status: 400, description: 'Invalid request' })
-  @ApiResponse({ status: 409, description: 'Faculty already exists' })
+  @ApiResponse({ status: 409, description: 'Mentor already exists' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
-  async registerFaculty(
+  async registerMentor(
     @Body() createMentorDto: createMentorDto,
     @Request() req: any,
   ): Promise<any> {

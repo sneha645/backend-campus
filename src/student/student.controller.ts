@@ -22,21 +22,19 @@ export class StudentController {
 
   @UseGuards(JwtAuthGuard)
   @Post('uploadProject')
-  @UseInterceptors(FileInterceptor('file', multerConfig))
+  @UseInterceptors(FileInterceptor('image', multerConfig))
   @ApiOperation({ summary: 'Upload a new project' })
   @ApiResponse({ status: 201, description: 'Project uploaded successfully' })
   @ApiResponse({ status: 400, description: 'Invalid request' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async uploadProject(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile() image: Express.Multer.File,
     @Body() uploadProjectDto: UploadProjectDto,
     @Request() req: any,
   ): Promise<any> {
     return this.studentService.uploadProject(
-      {
-        ...uploadProjectDto,
-        imageUrl: file ? `uploads/${file.filename}` : undefined,
-      },
+      uploadProjectDto,
+      image,
       req.user.userId,
     );
   }
