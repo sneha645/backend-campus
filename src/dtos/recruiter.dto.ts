@@ -16,6 +16,10 @@ export class CreateRecruiterDto {
   @IsEmail()
   email: string;
 
+  @ApiProperty({ example: 'Google' })
+  @IsString()
+  companyName: string;
+
   @ApiProperty({ example: 'password123' })
   @IsString()
   @MinLength(6)

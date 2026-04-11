@@ -19,4 +19,8 @@ export class RecruiterService {
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
   ) {}
+
+  async findAll() {
+    return this.userRepo.find({ where: { role: 'recruiter' } });
+  }
 }
