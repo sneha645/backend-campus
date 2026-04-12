@@ -24,4 +24,13 @@ export class AdminController {
   async approveRecruiter(@Param('id') id: string): Promise<any> {
     return this.adminService.approveRecruiter(id);
   }
+
+  @Post('reject/:id')
+  @ApiOperation({ summary: 'Reject recruiter' })
+  @ApiResponse({ status: 200, description: 'Recruiter reject successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async rejectRecruiter(@Param('id') id: string): Promise<any> {
+    return this.adminService.rejectRecruiter(id);
+  }
 }

@@ -21,6 +21,6 @@ export class RecruiterService {
   ) {}
 
   async findAll() {
-    return this.userRepo.find({ where: { role: 'Recruiter' } });
+    return this.userRepo.find({ where: { role: 'recruiter' } });
   }
 }

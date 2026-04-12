@@ -173,7 +173,7 @@ export class AuthService {
 
       user.isVerified = true;
 
-      if (user.role === 'Recruiter') {
+      if (user.role === 'recruiter') {
         user.status = 'pending';
       } else {
         user.status = 'approved';
