@@ -14,6 +14,8 @@ async function bootstrap() {
 
   dotenv.config();
 
+  app.setGlobalPrefix('api');
+
   app.enableCors({
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',

@@ -20,7 +20,7 @@ import { createMentorDto } from 'src/dtos/mentor.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('registerStudent')
+  @Post('register-student')
   @ApiOperation({ summary: 'Register a new student' })
   @ApiResponse({ status: 201, description: 'Student registered successfully' })
   @ApiResponse({ status: 400, description: 'Invalid request' })
@@ -33,7 +33,7 @@ export class AuthController {
     return this.authService.createStudent(createStudentDto);
   }
 
-  @Post('registerMentor')
+  @Post('register-mentor')
   @ApiOperation({ summary: 'Register a new mentor' })
   @ApiResponse({ status: 201, description: 'Mentor registered successfully' })
   @ApiResponse({ status: 400, description: 'Invalid request' })
@@ -46,7 +46,7 @@ export class AuthController {
     return this.authService.createMentor(createMentorDto);
   }
 
-  @Post('registerRecruiter')
+  @Post('register-recruiter')
   @ApiOperation({ summary: 'Register a new recruiter ' })
   @ApiResponse({
     status: 201,
@@ -91,4 +91,5 @@ export class AuthController {
   async verifyEmail(@Query('token') token: string): Promise<any> {
     return this.authService.verifyEmail(token);
   }
+  
 }
