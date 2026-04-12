@@ -10,7 +10,7 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { Project } from './project.entity';
 
-@Entity()
+@Entity('user')
 export class User {
   @PrimaryGeneratedColumn('uuid')
   @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000' })

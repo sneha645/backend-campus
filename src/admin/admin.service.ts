@@ -19,6 +19,7 @@ export class AdminService {
   ) {}
 
   async approveRecruiter(id: string) {
+    console.log("approved service run")
     const user = await this.userRepo.findOne({ where: { user_id: id } });
     if (!user) {
       throw new Error('User not found');

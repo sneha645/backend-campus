@@ -17,6 +17,7 @@ import { AuthDto } from 'src/dtos/auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { MailService } from 'src/mail/mail.service';
 import { createMentorDto } from 'src/dtos/mentor.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -25,6 +26,7 @@ export class AuthService {
     private readonly userRepo: Repository<User>,
     private readonly jwtService: JwtService,
     private readonly mailService: MailService,
+    private readonly configService: ConfigService,
   ) {}
 
   async findByEmail(email: string) {
@@ -114,7 +116,7 @@ export class AuthService {
   async createRecruiter(createRecruiterDto: CreateRecruiterDto): Promise<any> {
     try {
       const { name, email, password, role, companyName } = createRecruiterDto;
-      console.log(createRecruiterDto, 'run');
+      console.log('recruiter service run');
 
       const existingUser = await this.findByEmail(email);
       if (existingUser) {
@@ -122,6 +124,7 @@ export class AuthService {
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
+
       const user = await this.create({
         name,
         email,
@@ -137,9 +140,10 @@ export class AuthService {
 
       await this.userRepo.save(user);
 
+      const adminMail = this.configService.get<string>('ADMIN_EMAIL')!;
+
       await this.mailService.sendVerificationEmail(user.email, token);
-      const adminMail = process.env.ADMIN_EMAIL!;
-      await this.mailService.sendAdminApprovalRequest(adminMail);
+      await this.mailService.sendAdminApprovalRequest(adminMail, user.email);
 
       return {
         message: 'Recruiter registered successfully, Please verify your email',
@@ -154,6 +158,7 @@ export class AuthService {
 
   async verifyEmail(token: string) {
     try {
+      console.log('verify email service run');
       const decoded = this.jwtService.verify(token);
 
       const user = await this.findByEmail(decoded.email);
@@ -167,11 +172,13 @@ export class AuthService {
       }
 
       user.isVerified = true;
+
       if (user.role === 'Recruiter') {
         user.status = 'pending';
       } else {
         user.status = 'approved';
       }
+
       await this.userRepo.save(user);
 
       return { message: 'Email verified successfully' };
@@ -186,8 +193,9 @@ export class AuthService {
 
   async login(authDto: AuthDto): Promise<any> {
     try {
+      console.log('login service run');
+
       const { email, password } = authDto;
-      console.log('Login Start');
 
       const user = await this.findByEmail(email);
 

@@ -15,7 +15,7 @@ export enum ProjectStatus {
   REJECTED = 'REJECTED',
 }
 
-@Entity('uploadProject')
+@Entity('project')
 export class Project {
   @PrimaryGeneratedColumn('uuid')
   project_id!: string;

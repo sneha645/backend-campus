@@ -37,6 +37,7 @@ export class SetupService implements OnModuleInit {
       password: hashedPassword,
       role: 'admin',
       isVerified: true,
+      status: 'approved',
     });
 
     console.log('Admin created successfully');
