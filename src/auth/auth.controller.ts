@@ -6,6 +6,7 @@ import {
   Query,
   Request,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -14,6 +15,7 @@ import { CreateRecruiterDto } from 'src/dtos/recruiter.dto';
 import { AuthDto } from 'src/dtos/auth.dto';
 import { AuthService } from './auth.service';
 import { createMentorDto } from 'src/dtos/mentor.dto';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -92,6 +94,7 @@ export class AuthController {
     return this.authService.verifyEmail(token);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('me')
   @ApiOperation({ summary: 'Get current user' })
   @ApiResponse({ status: 200, description: 'User fetched successfully' })
