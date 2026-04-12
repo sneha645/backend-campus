@@ -147,4 +147,17 @@ export class StudentService {
       throw new InternalServerErrorException('Failed to get internships');
     }
   }
+
+  async getAllStudents(): Promise<any> {
+    try {
+      console.log('working');
+      const students = await this.userRepo.find({
+        where: { role: 'student' },
+      });
+      console.log('students', students);
+      return students;
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to get students');
+    }
+  }
 }

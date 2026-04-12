@@ -78,4 +78,14 @@ export class StudentController {
   async getMyInternships(@Request() req: any): Promise<any> {
     return this.studentService.getMyInternships(req.user.userId);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('all')
+  @ApiOperation({ summary: 'Get all students' })
+  @ApiResponse({ status: 200, description: 'List of students' })
+  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async getAllStudents(): Promise<any> {
+    return this.studentService.getAllStudents();
+  }
 }
