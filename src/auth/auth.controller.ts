@@ -91,5 +91,13 @@ export class AuthController {
   async verifyEmail(@Query('token') token: string): Promise<any> {
     return this.authService.verifyEmail(token);
   }
-  
+
+  @Get('me')
+  @ApiOperation({ summary: 'Get current user' })
+  @ApiResponse({ status: 200, description: 'User fetched successfully' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async me(@Request() req: any): Promise<any> {
+    return this.authService.me(req.user.userId);
+  }
 }
