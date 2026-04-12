@@ -71,15 +71,15 @@ export class AuthController {
     @Body() authDto: AuthDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<any> {
-    const result = await this.authService.login(authDto);
-    res.cookie('token', result.token, {
+    const data = await this.authService.login(authDto);
+    res.cookie('token', data.token, {
       httpOnly: true,
       secure: true,
       sameSite: 'lax',
       maxAge: 24 * 60 * 60 * 1000,
     });
     return {
-      result,
+      data,
     };
   }
 
