@@ -49,4 +49,14 @@ export class RecruiterController {
       logo,
     );
   }
+
+  @Get('companyProfile')
+  @ApiOperation({ summary: 'Get company profile' })
+  @ApiResponse({ status: 200, description: 'Profile fetched successfully' })
+  @ApiResponse({ status: 404, description: 'Profile not found' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async getCompanyProfile(@Req() req: any) {
+    const userId = req.user.id;
+    return this.recruiterService.getCompanyProfile(userId);
+  }
 }

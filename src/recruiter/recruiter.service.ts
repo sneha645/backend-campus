@@ -42,6 +42,30 @@ export class RecruiterService {
     const profile = this.companyRepo.create(dto);
     profile.user = user;
     profile.logo = logo ? `/uploads/images/${logo.filename}` : '';
-    return this.companyRepo.save(profile);
+
+    user.company = profile;
+    await this.userRepo.save(user);
+
+    const savedProfile = await this.companyRepo.save(profile);
+    delete (savedProfile as any).user;
+
+    return {
+      message: 'Company profile created successfully',
+      data: savedProfile,
+    };
+  }
+
+
+
+  async getCompanyProfile(userId: string) {
+    const user = await this.userRepo.findOne({
+      where: { user_id: userId },
+      relations: ['company'],
+    });
+    if (!user || !user.company) {
+      throw new NotFoundException('Company profile not found');
+    }
+    delete (user.company as any).user;
+    return user.company;
   }
 }
