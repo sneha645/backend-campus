@@ -115,7 +115,7 @@ export class AuthService {
 
   async createRecruiter(createRecruiterDto: CreateRecruiterDto): Promise<any> {
     try {
-      const { name, email, password, role, companyName } = createRecruiterDto;
+      const { name, email, password, role } = createRecruiterDto;
       console.log('recruiter service run');
 
       const existingUser = await this.findByEmail(email);
@@ -130,7 +130,6 @@ export class AuthService {
         email,
         password: hashedPassword,
         role,
-        companyName,
       });
 
       const token = this.jwtService.sign({
@@ -193,7 +192,6 @@ export class AuthService {
 
   async login(authDto: AuthDto): Promise<any> {
     try {
-      console.log('login service run');
 
       const { email, password } = authDto;
 
