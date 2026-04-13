@@ -14,6 +14,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreateCompanyProfileDto } from 'src/dtos/company.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerConfig } from 'src/common/upload.config';
+import { JobDto } from 'src/dtos/job.dto';
 
 @ApiTags('Recruiter')
 @Controller('recruiter')
@@ -31,7 +32,7 @@ export class RecruiterController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('uploadCompany')
+  @Post('createCompanyProfile')
   @UseInterceptors(FileInterceptor('logo', multerConfig))
   @ApiOperation({ summary: 'Create recruiter company profile' })
   @ApiResponse({ status: 201, description: 'Profile created successfully' })
@@ -50,7 +51,7 @@ export class RecruiterController {
     );
   }
 
-  @Get('companyProfile')
+  @Get('getCompanyProfile')
   @ApiOperation({ summary: 'Get company profile' })
   @ApiResponse({ status: 200, description: 'Profile fetched successfully' })
   @ApiResponse({ status: 404, description: 'Profile not found' })
@@ -58,5 +59,16 @@ export class RecruiterController {
   async getCompanyProfile(@Req() req: any) {
     const userId = req.user.id;
     return this.recruiterService.getCompanyProfile(userId);
+  }
+
+  @Post('createJob')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Create job posting' })
+  @ApiResponse({ status: 201, description: 'Job created successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async createJob(@Body() jobDto: JobDto, @Req() req: any) {
+    const userId = req.user.id;
+    return this.recruiterService.createJob(userId, jobDto);
   }
 }

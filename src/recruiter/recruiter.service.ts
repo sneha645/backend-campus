@@ -8,6 +8,8 @@ import { UploadInternshipDto } from 'src/dtos/internship.dto';
 import { Internship } from 'src/entities/internship.entity';
 import { CreateCompanyProfileDto } from 'src/dtos/company.dto';
 import { Company } from 'src/entities/company.entity';
+import { JobDto } from 'src/dtos/job.dto';
+import { Job } from 'src/entities/job.entity';
 
 @Injectable()
 export class RecruiterService {
@@ -23,6 +25,9 @@ export class RecruiterService {
 
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
+
+    @InjectRepository(Job)
+    private readonly jobRepo: Repository<Job>,
   ) {}
 
   async findAll() {
@@ -55,8 +60,6 @@ export class RecruiterService {
     };
   }
 
-
-
   async getCompanyProfile(userId: string) {
     const user = await this.userRepo.findOne({
       where: { user_id: userId },
@@ -67,5 +70,20 @@ export class RecruiterService {
     }
     delete (user.company as any).user;
     return user.company;
+  }
+
+  async createJob(userId: string, dto: JobDto) {
+    const user = await this.userRepo.findOne({ where: { user_id: userId } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const job = this.jobRepo.create(dto);
+    job.user = user;
+    await this.jobRepo.save(job);
+    return {
+      message: 'Job created successfully',
+      data: job,
+    };
   }
 }

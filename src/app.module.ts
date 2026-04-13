@@ -13,6 +13,7 @@ import { AdminModule } from './admin/admin.module';
 import { MentorModule } from './mentor/mentor.module';
 import { RecruiterModule } from './recruiter/recruiter.module';
 import { Company } from './entities/company.entity';
+import { Job } from './entities/job.entity';
 
 @Module({
   imports: [
@@ -30,7 +31,7 @@ import { Company } from './entities/company.entity';
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
         autoLoadEntities: true,
-        entities: [Project, Internship, User, Company],
+        entities: [Project, Internship, User, Company, Job],
         synchronize: true,
       }),
     }),
