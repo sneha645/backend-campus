@@ -103,7 +103,7 @@ export class StudentService {
         student: student,
         mentor: mentor,
         certificateImage: certificateImage
-          ? `uploads/images/${certificateImage.filename}`
+          ? `/uploads/images/${certificateImage.filename}`
           : undefined,
       });
 

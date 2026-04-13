@@ -6,9 +6,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  OneToOne,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Project } from './project.entity';
+import { Company } from './company.entity';
 
 @Entity('user')
 export class User {
@@ -56,6 +58,9 @@ export class User {
   @Column({nullable: true})
   @ApiProperty({ example: 'Google' })
   companyName!: string;
+
+  @OneToOne(() => Company, (company) => company.user)
+  company!: Company;
 
   @CreateDateColumn()
   createdAt!: Date;
