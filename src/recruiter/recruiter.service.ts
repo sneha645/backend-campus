@@ -46,7 +46,7 @@ export class RecruiterService {
     }
     const profile = this.companyRepo.create(dto);
     profile.user = user;
-    profile.logo = logo ? `/uploads/images/${logo.filename}` : '';
+    profile.logoUrl = logo ? `/uploads/images/${logo.filename}` : '';
 
     user.company = profile;
     await this.userRepo.save(user);

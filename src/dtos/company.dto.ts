@@ -6,12 +6,20 @@ export class CreateCompanyProfileDto {
   companyName: string;
 
   @IsOptional()
-  @IsString()
-  companyDescription?: string;
-
-  @IsOptional()
   @IsUrl()
   website?: string;
+
+  @IsOptional()
+  @IsString()
+  industry?: string;
+
+  @IsOptional()
+  @IsString()
+  companySize?: string;
+
+  @IsOptional()
+  @IsString()
+  aboutCompany?: string;
 
   @IsOptional()
   @IsString()

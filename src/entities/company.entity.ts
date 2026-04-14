@@ -27,8 +27,8 @@ export class Company {
   companyEmail!: string;
 
   @Column()
-  @ApiProperty({ example: 'Google' })
-  companyDescription!: string;
+  @ApiProperty({ example: 'About Company' })
+  aboutCompany!: string;
 
   @Column()
   @ApiProperty({ example: 'https://google.com' })
@@ -36,7 +36,7 @@ export class Company {
 
   @Column()
   @ApiProperty({ example: 'https://google.com' })
-  logo!: string;
+  logoUrl!: string;
 
   @Column()
   @ApiProperty({ example: 'https://google.com' })

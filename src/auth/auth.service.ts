@@ -192,7 +192,6 @@ export class AuthService {
 
   async login(authDto: AuthDto): Promise<any> {
     try {
-
       const { email, password } = authDto;
 
       const user = await this.findByEmail(email);
@@ -242,7 +241,11 @@ export class AuthService {
   async me(userId: string): Promise<any> {
     try {
       console.log('me service run');
-      const user = await this.userRepo.findOne({ where: { user_id: userId } });
+      const user = await this.userRepo.findOne({
+        where: { user_id: userId },
+        relations: ['company', 'studentProjects', 'mentorProjects', 'jobs'],
+      });
+      console.log('user', user);
       return {
         message: 'User fetched successfully',
         user,
