@@ -203,4 +203,15 @@ export class StudentService {
       throw new InternalServerErrorException('Failed to get applications');
     }
   }
+
+  async getAllJobs(): Promise<any> {
+    try {
+      console.log('working');
+      const jobs = await this.jobRepo.find();
+      console.log('jobs', jobs);
+      return jobs;
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to get jobs');
+    }
+  }
 }

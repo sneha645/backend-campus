@@ -90,6 +90,15 @@ export class StudentController {
     return this.studentService.getAllStudents();
   }
 
+  @Get('jobs')
+  @ApiOperation({ summary: 'Get all jobs' })
+  @ApiResponse({ status: 200, description: 'List of jobs' })
+  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async getAllJobs(): Promise<any> {
+    return this.studentService.getAllJobs();
+  }
+
   @UseGuards(JwtAuthGuard)
   @Post('apply/:jobId')
   @ApiOperation({ summary: 'Apply for a job' })

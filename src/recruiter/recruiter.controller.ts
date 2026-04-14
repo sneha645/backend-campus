@@ -85,6 +85,7 @@ export class RecruiterController {
     return this.recruiterService.getMyJobs(userId);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('getApplications')
   @ApiOperation({ summary: 'Get all applications' })
   @ApiResponse({
