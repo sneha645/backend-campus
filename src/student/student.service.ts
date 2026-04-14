@@ -15,6 +15,8 @@ import { UploadInternshipDto } from 'src/dtos/internship.dto';
 import { Internship } from 'src/entities/internship.entity';
 import { Job } from 'src/entities/job.entity';
 import { Application } from 'src/entities/application.entity';
+import { UpdateStudentProfileDto } from 'src/dtos/updateStudentProfile.dto';
+import { Assignment } from 'src/entities/assignment.entity';
 
 @Injectable()
 export class StudentService {
@@ -33,6 +35,9 @@ export class StudentService {
 
     @InjectRepository(Application)
     private readonly applicationRepo: Repository<Application>,
+
+    @InjectRepository(Assignment)
+    private readonly assignmentRepo: Repository<Assignment>,
   ) {}
 
   async uploadProject(
@@ -41,7 +46,6 @@ export class StudentService {
     studentId: string,
   ): Promise<any> {
     try {
-      console.log('working');
       const { mentorId, ...projectData } = uploadProjectDto;
 
       const student = await this.userRepo.findOne({
@@ -68,7 +72,6 @@ export class StudentService {
       });
 
       const response = await this.projectRepo.save(project);
-      console.log('response', response);
 
       return {
         message: 'Project uploaded successfully',
@@ -82,13 +85,23 @@ export class StudentService {
     }
   }
 
+  async getMyProjects(studentId: string): Promise<any> {
+    try {
+      const projects = await this.projectRepo.find({
+        where: { student: { user_id: studentId } },
+      });
+      return projects;
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to get projects');
+    }
+  }
+
   async uploadInternship(
     uploadInternshipDto: UploadInternshipDto,
     certificateImage: Express.Multer.File,
     studentId: string,
   ): Promise<any> {
     try {
-      console.log('working');
       const { mentorId, ...internshipData } = uploadInternshipDto;
 
       const student = await this.userRepo.findOne({
@@ -117,7 +130,6 @@ export class StudentService {
       });
 
       const response = await this.internshipRepo.save(internship);
-      console.log('response', response);
 
       return {
         message: 'Internship uploaded successfully',
@@ -131,87 +143,152 @@ export class StudentService {
     }
   }
 
-  async getMyProjects(studentId: string): Promise<any> {
-    try {
-      console.log('working');
-      const projects = await this.projectRepo.find({
-        where: { student: { user_id: studentId } },
-      });
-      console.log('projects', projects);
-      return projects;
-    } catch (error) {
-      throw new InternalServerErrorException('Failed to get projects');
-    }
-  }
-
   async getMyInternships(studentId: string): Promise<any> {
     try {
-      console.log('working');
       const internships = await this.internshipRepo.find({
         where: { student: { user_id: studentId } },
       });
-      console.log('internships', internships);
       return internships;
     } catch (error) {
       throw new InternalServerErrorException('Failed to get internships');
     }
   }
 
-  async getAllStudents(): Promise<any> {
+  async getProfile(studentId: string): Promise<any> {
     try {
-      console.log('working');
-      const students = await this.userRepo.find({
-        where: { role: 'student' },
+      const student = await this.userRepo.findOne({
+        where: { user_id: studentId },
       });
-      console.log('students', students);
-      return students;
+      return student;
     } catch (error) {
-      throw new InternalServerErrorException('Failed to get students');
+      throw new InternalServerErrorException('Failed to get profile');
     }
   }
 
-  async applyJob(jobId: string, studentId: string) {
-    const job = await this.jobRepo.findOne({ where: { job_id: jobId } });
-
-    if (!job) throw new NotFoundException('Job not found');
-
-    const existing = await this.applicationRepo.findOne({
-      where: { job: { job_id: jobId }, student: { user_id: studentId } },
-    });
-
-    if (existing) {
-      throw new BadRequestException('Already applied');
-    }
-
-    const application = this.applicationRepo.create({
-      job,
-      student: { user_id: studentId },
-    });
-
-    return this.applicationRepo.save(application);
-  }
-
-  async getMyApplications(studentId: string): Promise<any> {
+  async updateProfile(
+    updateStudentProfileDto: UpdateStudentProfileDto,
+    studentId: string,
+  ): Promise<any> {
     try {
-      console.log('working');
-      const applications = await this.applicationRepo.find({
-        where: { student: { user_id: studentId } },
+      const student = await this.userRepo.findOne({
+        where: { user_id: studentId },
       });
-      console.log('applications', applications);
-      return applications;
+
+      if (!student) {
+        throw new NotFoundException('Student not found');
+      }
+
+      student.name = updateStudentProfileDto.name;
+      student.year = updateStudentProfileDto.year;
+      student.branch = updateStudentProfileDto.branch;
+
+      const response = await this.userRepo.save(student);
+      return {
+        message: 'Profile updated successfully',
+        student: response,
+      };
     } catch (error) {
-      throw new InternalServerErrorException('Failed to get applications');
+      throw new InternalServerErrorException('Failed to update profile');
     }
   }
 
-  async getAllJobs(): Promise<any> {
+  async getJobs(): Promise<any> {
     try {
-      console.log('working');
       const jobs = await this.jobRepo.find();
-      console.log('jobs', jobs);
       return jobs;
     } catch (error) {
       throw new InternalServerErrorException('Failed to get jobs');
     }
   }
+
+  async getAllAssignments(collageYear: string): Promise<any> {
+    try {
+      const assignments = await this.assignmentRepo.find({
+        where: { student: { year: collageYear } },
+      });
+      return assignments;
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to get assignments');
+    }
+  }
+
+  async submitAssignment(
+    file: Express.Multer.File,
+    studentId: string,
+  ): Promise<any> {
+    try {
+      const assignment = this.assignmentRepo.create({
+        file: file ? `/uploads/images/${file.filename}` : undefined,
+        student: { user_id: studentId },
+      });
+
+      assignment.status = 'submitted';
+      assignment.submitted_at = new Date().toISOString();
+      const response = await this.assignmentRepo.save(assignment);
+      return {
+        message: 'Assignment submitted successfully',
+        assignment: response,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to submit assignment');
+    }
+  }
+
+  // async getAllStudents(): Promise<any> {
+  //   try {
+  //     console.log('working');
+  //     const students = await this.userRepo.find({
+  //       where: { role: 'student' },
+  //     });
+  //     console.log('students', students);
+  //     return students;
+  //   } catch (error) {
+  //     throw new InternalServerErrorException('Failed to get students');
+  //   }
+  // }
+
+  // async applyJob(jobId: string, studentId: string) {
+  //   const job = await this.jobRepo.findOne({ where: { job_id: jobId } });
+
+  //   if (!job) throw new NotFoundException('Job not found');
+
+  //   const existing = await this.applicationRepo.findOne({
+  //     where: { job: { job_id: jobId }, student: { user_id: studentId } },
+  //   });
+
+  //   if (existing) {
+  //     throw new BadRequestException('Already applied');
+  //   }
+
+  //   const application = this.applicationRepo.create({
+  //     job,
+  //     student: { user_id: studentId },
+  //   });
+
+  //   return this.applicationRepo.save(application);
+  // }
+
+  // async getMyApplications(studentId: string): Promise<any> {
+  //   try {
+  //     console.log('working');
+  //     const applications = await this.applicationRepo.find({
+  //       where: { student: { user_id: studentId } },
+  //     });
+  //     console.log('applications', applications);
+  //     return applications;
+  //   } catch (error) {
+  //     throw new InternalServerErrorException('Failed to get applications');
+  //   }
+  // }
+
+  // async getAllJobs(): Promise<any> {
+  //   try {
+  //     console.log('working');
+  //     const jobs = await this.jobRepo.find();
+  //     console.log('jobs', jobs);
+  //     return jobs;
+  //   } catch (error) {
+  //     throw new InternalServerErrorException('Failed to get jobs');
+  //   }
+  // }
 }

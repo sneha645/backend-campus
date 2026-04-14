@@ -7,10 +7,11 @@ import { AuthModule } from 'src/auth/auth.module';
 import { Project } from 'src/entities/project.entity';
 import { User } from 'src/entities/user.entity';
 import { Internship } from 'src/entities/internship.entity';
+import { Assignment } from 'src/entities/assignment.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Project, Internship, User]),
+    TypeOrmModule.forFeature([Project, Internship, User, Assignment]),
     MailModule,
     AuthModule,
   ],

@@ -10,10 +10,11 @@ import { User } from 'src/entities/user.entity';
 import { Internship } from 'src/entities/internship.entity';
 import { Job } from 'src/entities/job.entity';
 import { Application } from 'src/entities/application.entity';
+import { Assignment } from 'src/entities/assignment.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Project, Internship, User, Job, Application]),
+    TypeOrmModule.forFeature([Project, Internship, User, Job, Application, Assignment]),
     MailModule,
     AuthModule,
   ],

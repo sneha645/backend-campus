@@ -13,6 +13,7 @@ import { Project } from './project.entity';
 import { Company } from './company.entity';
 import { Job } from './job.entity';
 import { Application } from './application.entity';
+import { Assignment } from './assignment.entity';
 
 @Entity('user')
 export class User {
@@ -73,6 +74,9 @@ export class User {
 
   @OneToMany(() => Application, (application) => application.student)
   applications!: Application[];
+
+  @OneToMany(() => Assignment, (assignment) => assignment.student)
+  assignments!: Assignment[];
 
   @CreateDateColumn()
   createdAt!: Date;

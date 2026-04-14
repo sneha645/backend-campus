@@ -10,9 +10,9 @@ import {
 import { User } from './user.entity';
 
 export enum ProjectStatus {
-  PENDING = 'PENDING',
-  APPROVED = 'APPROVED',
-  REJECTED = 'REJECTED',
+  PENDING = 'pending',
+  APPROVED = 'approved',
+  REJECTED = 'rejected',
 }
 
 @Entity('project')
