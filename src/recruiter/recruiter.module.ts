@@ -9,10 +9,18 @@ import { User } from 'src/entities/user.entity';
 import { Internship } from 'src/entities/internship.entity';
 import { Company } from 'src/entities/company.entity';
 import { Job } from 'src/entities/job.entity';
+import { Application } from 'src/entities/application.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Project, Internship, User, Company, Job]),
+    TypeOrmModule.forFeature([
+      Project,
+      Internship,
+      User,
+      Company,
+      Job,
+      Application,
+    ]),
     MailModule,
     AuthModule,
   ],

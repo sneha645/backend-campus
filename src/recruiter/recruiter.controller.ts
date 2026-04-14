@@ -84,4 +84,27 @@ export class RecruiterController {
     const userId = req.user.userId;
     return this.recruiterService.getMyJobs(userId);
   }
+
+  @Get('getApplications')
+  @ApiOperation({ summary: 'Get all applications' })
+  @ApiResponse({
+    status: 200,
+    description: 'Applications fetched successfully',
+  })
+  @ApiResponse({ status: 404, description: 'Applications not found' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async getApplications(@Req() req: any) {
+    const userId = req.user.userId;
+    return this.recruiterService.getApplications(userId);
+  }
+
+  @Post('updateApplicationStatus')
+  @ApiOperation({ summary: 'Update application status' })
+  @ApiResponse({ status: 200, description: 'Application status updated successfully' })
+  @ApiResponse({ status: 404, description: 'Application not found' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async updateApplicationStatus(@Body() body: any) {
+    const { applicationId, status } = body;
+    return this.recruiterService.updateApplicationStatus(applicationId, status);
+  }
 }

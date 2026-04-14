@@ -6,8 +6,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
 import { User } from './user.entity';
+import { Application } from './application.entity';
 
 @Entity('job')
 export class Job {
@@ -64,6 +66,9 @@ export class Job {
 
   @ManyToOne(() => User, (user) => user.jobs)
   user!: User;
+
+  @OneToMany(() => Application, (application) => application.job)
+  applications!: Application[];
 
   @CreateDateColumn()
   createdAt!: Date;

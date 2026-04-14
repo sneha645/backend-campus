@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Request,
   UploadedFile,
@@ -87,5 +88,28 @@ export class StudentController {
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async getAllStudents(): Promise<any> {
     return this.studentService.getAllStudents();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('apply/:jobId')
+  @ApiOperation({ summary: 'Apply for a job' })
+  @ApiResponse({ status: 201, description: 'Job applied successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async applyForJob(
+    @Param('jobId') jobId: string,
+    @Request() req: any,
+  ): Promise<any> {
+    return this.studentService.applyJob(jobId, req.user.userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('getMyApplications')
+  @ApiOperation({ summary: 'Get all applications' })
+  @ApiResponse({ status: 201, description: 'Applications fetched successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async getMyApplications(@Request() req: any): Promise<any> {
+    return this.studentService.getMyApplications(req.user.userId);
   }
 }

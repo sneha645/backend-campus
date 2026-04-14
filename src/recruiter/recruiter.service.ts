@@ -10,6 +10,7 @@ import { CreateCompanyProfileDto } from 'src/dtos/company.dto';
 import { Company } from 'src/entities/company.entity';
 import { JobDto } from 'src/dtos/job.dto';
 import { Job } from 'src/entities/job.entity';
+import { Application } from 'src/entities/application.entity';
 
 @Injectable()
 export class RecruiterService {
@@ -28,6 +29,9 @@ export class RecruiterService {
 
     @InjectRepository(Job)
     private readonly jobRepo: Repository<Job>,
+
+    @InjectRepository(Application)
+    private readonly applicationRepo: Repository<Application>,
   ) {}
 
   async findAll() {
@@ -104,5 +108,27 @@ export class RecruiterService {
       throw new NotFoundException('Job postings not found');
     }
     return user.jobs;
+  }
+
+  async getApplications(jobId: string) {
+    return this.applicationRepo.find({
+      where: { job: { job_id: jobId } },
+      relations: ['student', 'job'],
+    });
+  }
+
+  async updateApplicationStatus(applicationId: string, status: string) {
+    const application = await this.applicationRepo.findOne({
+      where: { application_id: applicationId },
+    });
+    if (!application) {
+      throw new NotFoundException('Application not found');
+    }
+    application.status = status;
+    await this.applicationRepo.save(application);
+    return {
+      message: 'Application status updated successfully',
+      data: application,
+    };
   }
 }

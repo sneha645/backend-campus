@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   InternalServerErrorException,
@@ -12,6 +13,8 @@ import { Project } from 'src/entities/project.entity';
 import { User } from 'src/entities/user.entity';
 import { UploadInternshipDto } from 'src/dtos/internship.dto';
 import { Internship } from 'src/entities/internship.entity';
+import { Job } from 'src/entities/job.entity';
+import { Application } from 'src/entities/application.entity';
 
 @Injectable()
 export class StudentService {
@@ -24,6 +27,12 @@ export class StudentService {
 
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
+
+    @InjectRepository(Job)
+    private readonly jobRepo: Repository<Job>,
+
+    @InjectRepository(Application)
+    private readonly applicationRepo: Repository<Application>,
   ) {}
 
   async uploadProject(
@@ -158,6 +167,40 @@ export class StudentService {
       return students;
     } catch (error) {
       throw new InternalServerErrorException('Failed to get students');
+    }
+  }
+
+  async applyJob(jobId: string, studentId: string) {
+    const job = await this.jobRepo.findOne({ where: { job_id: jobId } });
+
+    if (!job) throw new NotFoundException('Job not found');
+
+    const existing = await this.applicationRepo.findOne({
+      where: { job: { job_id: jobId }, student: { user_id: studentId } },
+    });
+
+    if (existing) {
+      throw new BadRequestException('Already applied');
+    }
+
+    const application = this.applicationRepo.create({
+      job,
+      student: { user_id: studentId },
+    });
+
+    return this.applicationRepo.save(application);
+  }
+
+  async getMyApplications(studentId: string): Promise<any> {
+    try {
+      console.log('working');
+      const applications = await this.applicationRepo.find({
+        where: { student: { user_id: studentId } },
+      });
+      console.log('applications', applications);
+      return applications;
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to get applications');
     }
   }
 }
