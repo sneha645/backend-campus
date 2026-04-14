@@ -86,4 +86,15 @@ export class RecruiterService {
       data: job,
     };
   }
+
+  async getMyJobs(userId: string) {
+    const user = await this.userRepo.findOne({
+      where: { user_id: userId },
+      relations: ['jobs'],
+    });
+    if (!user || !user.jobs) {
+      throw new NotFoundException('Job postings not found');
+    }
+    return user.jobs;
+  }
 }

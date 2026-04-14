@@ -71,4 +71,17 @@ export class RecruiterController {
     const userId = req.user.id;
     return this.recruiterService.createJob(userId, jobDto);
   }
+
+  @Get('getMyJobs')
+  @ApiOperation({ summary: 'Get my jobs' })
+  @ApiResponse({
+    status: 200,
+    description: 'My jobs fetched successfully',
+  })
+  @ApiResponse({ status: 404, description: 'Job postings not found' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async getMyJobs(@Req() req: any) {
+    const userId = req.user.id;
+    return this.recruiterService.getMyJobs(userId);
+  }
 }
