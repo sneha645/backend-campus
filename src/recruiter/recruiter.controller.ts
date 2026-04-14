@@ -43,7 +43,7 @@ export class RecruiterController {
     @UploadedFile() logo: Express.Multer.File,
     @Req() req: any,
   ) {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     return this.recruiterService.createProfile(
       userId,
       createCompanyProfileDto,
@@ -57,7 +57,7 @@ export class RecruiterController {
   @ApiResponse({ status: 404, description: 'Profile not found' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async getCompanyProfile(@Req() req: any) {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     return this.recruiterService.getCompanyProfile(userId);
   }
 
@@ -68,7 +68,7 @@ export class RecruiterController {
   @ApiResponse({ status: 400, description: 'Invalid request' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async createJob(@Body() jobDto: JobDto, @Req() req: any) {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     return this.recruiterService.createJob(userId, jobDto);
   }
 
@@ -81,7 +81,7 @@ export class RecruiterController {
   @ApiResponse({ status: 404, description: 'Job postings not found' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async getMyJobs(@Req() req: any) {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     return this.recruiterService.getMyJobs(userId);
   }
 }

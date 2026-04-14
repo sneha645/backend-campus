@@ -4,7 +4,6 @@ import { extname, join } from 'path';
 export const multerConfig = {
   storage: diskStorage({
     destination: (req, file, cb) => {
-      console.log('run');
       if (file.mimetype.startsWith('image')) {
         cb(null, join(process.cwd(), 'uploads/images'));
       } else if (file.mimetype.startsWith('video')) {

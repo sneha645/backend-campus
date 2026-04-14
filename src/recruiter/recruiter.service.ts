@@ -39,16 +39,19 @@ export class RecruiterService {
     dto: CreateCompanyProfileDto,
     logo: Express.Multer.File,
   ) {
-    console.log('running');
     const user = await this.userRepo.findOne({ where: { user_id: userId } });
+    console.log('user', user);
     if (!user) {
       throw new NotFoundException('User not found');
     }
+
     const profile = this.companyRepo.create(dto);
+    console.log('profile', profile);
     profile.user = user;
     profile.logoUrl = logo ? `/uploads/images/${logo.filename}` : '';
 
     user.company = profile;
+    console.log('user', user);
     await this.userRepo.save(user);
 
     const savedProfile = await this.companyRepo.save(profile);
@@ -58,6 +61,11 @@ export class RecruiterService {
       message: 'Company profile created successfully',
       data: savedProfile,
     };
+
+    // return {
+    //   message: 'Company profile created successfully',
+    //   data: savedProfile,
+    // };
   }
 
   async getCompanyProfile(userId: string) {

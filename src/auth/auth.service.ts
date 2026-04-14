@@ -240,21 +240,13 @@ export class AuthService {
 
   async me(userId: string): Promise<any> {
     try {
-      console.log('me service run');
       const user = await this.userRepo.findOne({
         where: { user_id: userId },
         relations: ['company', 'studentProjects', 'mentorProjects', 'jobs'],
       });
-      console.log('user', user);
-      return {
-        message: 'User fetched successfully',
-        user,
-      };
+
+      return user;
     } catch (error) {
-      console.log('error', error);
-      if (error instanceof UnauthorizedException) {
-        throw error;
-      }
       throw new InternalServerErrorException('Failed to fetch user');
     }
   }

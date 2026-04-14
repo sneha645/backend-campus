@@ -38,6 +38,14 @@ export class Company {
   @ApiProperty({ example: 'https://google.com' })
   logoUrl!: string;
 
+  @Column({ nullable: true })
+  @ApiProperty({ example: 'IT Services & Consulting' })
+  industry!: string;
+
+  @Column({ nullable: true })
+  @ApiProperty({ example: '1001-5000 employees' })
+  companySize!: string;
+
   @Column()
   @ApiProperty({ example: 'https://google.com' })
   location!: string;
