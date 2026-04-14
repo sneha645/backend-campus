@@ -41,7 +41,7 @@ export class AuthService {
 
   async createStudent(createStudentDto: CreateStudentDto): Promise<any> {
     try {
-      const { name, email, password, role } = createStudentDto;
+      const { name, email, password, role, year, branch } = createStudentDto;
 
       const existingUser = await this.findByEmail(email);
 
@@ -56,6 +56,8 @@ export class AuthService {
         email,
         password: hashedPassword,
         role,
+        year,
+        branch,
       });
 
       const token = this.jwtService.sign({
@@ -65,7 +67,10 @@ export class AuthService {
 
       await this.userRepo.save(user);
 
+      const adminMail = this.configService.get<string>('ADMIN_EMAIL')!;
+
       await this.mailService.sendVerificationEmail(user.email, token);
+      await this.mailService.sendStudentApprovalRequest(adminMail, user.email);
 
       return {
         message: 'Student registered successfully, Please verify your email',
@@ -157,7 +162,6 @@ export class AuthService {
 
   async verifyEmail(token: string) {
     try {
-      console.log('verify email service run');
       const decoded = this.jwtService.verify(token);
 
       const user = await this.findByEmail(decoded.email);
@@ -171,12 +175,6 @@ export class AuthService {
       }
 
       user.isVerified = true;
-
-      if (user.role === 'recruiter') {
-        user.status = 'pending';
-      } else {
-        user.status = 'approved';
-      }
 
       await this.userRepo.save(user);
 
@@ -211,6 +209,13 @@ export class AuthService {
       if (!user) {
         throw new UnauthorizedException('Invalid credentials');
       }
+
+      if (user?.status === 'rejected') {
+        throw new BadRequestException(
+          'User rejected, Please contact admin for more information',
+        );
+      }
+
       const isPasswordValid = await bcrypt.compare(password, user.password);
 
       if (!isPasswordValid) {

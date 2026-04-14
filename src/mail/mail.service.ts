@@ -49,4 +49,29 @@ export class MailService {
 
     return this.sendMail(email, 'Email Verification', html);
   }
+
+  async sendStudentApprovalRequest(email: string, studentMail: string) {
+    const html = `
+  <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
+    
+    <h3>Hello Admin,</h3>
+
+    <p>
+      A new student has registered on the platform using the email:
+      <strong>${studentMail}</strong>.
+    </p>
+
+    <p>
+      Please review and approve the account to grant access.
+    </p>
+
+    <p style="font-size: 12px; color: #777;">
+      This is an automated message. Please do not reply.
+    </p>
+
+  </div>
+`;
+
+    return this.sendMail(email, 'Email Verification', html);
+  }
 }

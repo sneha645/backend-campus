@@ -32,13 +32,21 @@ export class User {
   @ApiProperty({ example: 'hashedpassword123' })
   password!: string;
 
-  @Column({ default: false })
-  @ApiProperty({ example: false })
-  isVerified!: boolean;
+  @Column()
+  @ApiProperty({ example: '1st Year' })
+  year!: string;
+
+  @Column()
+  @ApiProperty({ example: 'Computer Science' })
+  branch!: string;
 
   @Column({})
   @ApiProperty({ example: 'student' })
   role!: string;
+
+  @Column({ default: false })
+  @ApiProperty({ example: false })
+  isVerified!: boolean;
 
   @Column({ default: false })
   @ApiProperty({ example: false })
