@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Project } from 'src/entities/project.entity';
-import { User } from 'src/entities/user.entity';
+import { User, UserRole } from 'src/entities/user.entity';
 import { Internship } from 'src/entities/internship.entity';
 
 @Injectable()
@@ -42,7 +42,7 @@ export class AdminService {
 
   async getPendingRecruiters() {
     return this.userRepo.find({
-      where: { role: 'recruiter', status: 'pending' },
+      where: { role: UserRole.RECRUITER, status: 'pending' },
     });
   }
 

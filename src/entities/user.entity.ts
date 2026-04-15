@@ -40,7 +40,8 @@ export class User {
 
   @Column({
     type: 'enum',
-    enum: UserRole.STUDENT,
+    enum: UserRole,
+    default: UserRole.STUDENT,
   })
   role!: UserRole;
 
@@ -51,6 +52,19 @@ export class User {
   @Column({ nullable: true })
   @ApiProperty({ example: 'Computer Science' })
   branch!: string;
+
+  @Column({ nullable: true })
+  @ApiProperty({ example: 'Computer Science' })
+  department?: string;
+
+  @Column({ nullable: true })
+  @ApiProperty({ example: 'DSA' })
+  specialization?: string;
+
+  @Column({ type: 'int', nullable: true })
+  @ApiProperty({ example: 2 })
+  experience?: number;
+
 
   @OneToMany(() => Project, (project) => project.student)
   studentProjects!: Project[];

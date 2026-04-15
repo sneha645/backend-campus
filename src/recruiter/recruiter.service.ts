@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 
 import { InjectRepository } from '@nestjs/typeorm';
 import { Project } from 'src/entities/project.entity';
-import { User } from 'src/entities/user.entity';
+import { User, UserRole } from 'src/entities/user.entity';
 import { CreateCompanyProfileDto } from 'src/dtos/company.dto';
 import { Company } from 'src/entities/company.entity';
 import { JobDto } from 'src/dtos/job.dto';
@@ -30,7 +30,7 @@ export class RecruiterService {
   ) {}
 
   async findAll() {
-    return this.userRepo.find({ where: { role: 'recruiter' } });
+    return this.userRepo.find({ where: { role: UserRole.RECRUITER } });
   }
 
   async createProfile(

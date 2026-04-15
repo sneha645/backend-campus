@@ -43,8 +43,6 @@ import { Assignment } from './entities/assignment.entity';
           Assignment,
         ],
         synchronize: true,
-
-        dropSchema: true,
       }),
     }),
     AuthModule,

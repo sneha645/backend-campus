@@ -10,7 +10,7 @@ import { Repository } from 'typeorm';
 
 import { InjectRepository } from '@nestjs/typeorm';
 import { Project } from 'src/entities/project.entity';
-import { User } from 'src/entities/user.entity';
+import { User, UserRole } from 'src/entities/user.entity';
 import { UploadInternshipDto } from 'src/dtos/internship.dto';
 import { Internship } from 'src/entities/internship.entity';
 import { Job } from 'src/entities/job.entity';
@@ -50,7 +50,7 @@ export class StudentService {
       }
 
       const mentor = await this.userRepo.findOne({
-        where: { user_id: uploadProjectDto.mentorId, role: 'mentor' },
+        where: { user_id: uploadProjectDto.mentorId, role: UserRole.MENTOR },
       });
       if (!mentor) {
         throw new NotFoundException('Mentor not found');
@@ -95,7 +95,7 @@ export class StudentService {
       }
 
       const mentor = await this.userRepo.findOne({
-        where: { user_id: uploadInternshipDto.mentorId, role: 'mentor' },
+        where: { user_id: uploadInternshipDto.mentorId, role: UserRole.MENTOR },
       });
 
       if (!mentor) {

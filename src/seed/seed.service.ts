@@ -1,6 +1,5 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 
-import * as bcrypt from 'bcrypt';
 import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
@@ -29,15 +28,10 @@ export class SetupService implements OnModuleInit {
       return;
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    await this.authService.create({
+    await this.authService.createAdmin({
       name,
       email,
-      password: hashedPassword,
-      role: 'admin',
-      isVerified: true,
-      status: 'approved',
+      password,
     });
 
     console.log('Admin created successfully');

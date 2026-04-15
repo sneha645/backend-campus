@@ -7,7 +7,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { User } from '../entities/user.entity';
+import { User, UserRole } from '../entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateStudentDto } from 'src/dtos/student.dto';
@@ -35,6 +35,54 @@ export class AuthService {
     });
   }
 
+  // create admin
+  async createAdmin(createAdminDto: {
+    name: string;
+    email: string;
+    password: string;
+  }): Promise<any> {
+    try {
+      const { name, email, password } = createAdminDto;
+
+      const existingUser = await this.findByEmail(email);
+      if (existingUser) {
+        throw new ConflictException('User already exists');
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      const user = this.userRepo.create({
+        name,
+        email,
+        password: hashedPassword,
+        role: UserRole.ADMIN,
+        isVerified: true,
+        status: 'approved',
+      });
+
+      const token = this.jwtService.sign({
+        email: user.email,
+        role: user.role,
+      });
+
+      await this.userRepo.save(user);
+
+      const adminMail = this.configService.get<string>('ADMIN_EMAIL')!;
+
+      await this.mailService.sendVerificationEmail(user.email, token);
+      await this.mailService.sendAdminApprovalRequest(adminMail, user.email);
+
+      return {
+        message: 'Admin registered successfully, Please verify your email',
+      };
+    } catch (error) {
+      if (error instanceof ConflictException) {
+        throw error;
+      }
+      throw new InternalServerErrorException('Failed to create user');
+    }
+  }
+
   // create student
   async createStudent(createStudentDto: CreateStudentDto): Promise<any> {
     try {
@@ -52,7 +100,7 @@ export class AuthService {
         name,
         email,
         password: hashedPassword,
-        role,
+        role: role as UserRole,
         year,
         branch,
       });
@@ -98,11 +146,11 @@ export class AuthService {
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
-      const user = await this.create({
+      const user = this.userRepo.create({
         name,
         email,
         password: hashedPassword,
-        role,
+        role: role as UserRole,
         department,
         specialization,
         experience,
@@ -143,11 +191,11 @@ export class AuthService {
 
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      const user = await this.create({
+      const user = this.userRepo.create({
         name,
         email,
         password: hashedPassword,
-        role,
+        role: role as UserRole,
       });
 
       const token = this.jwtService.sign({
