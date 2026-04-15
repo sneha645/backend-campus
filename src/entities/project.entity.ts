@@ -9,12 +9,6 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 
-export enum ProjectStatus {
-  PENDING = 'pending',
-  APPROVED = 'approved',
-  REJECTED = 'rejected',
-}
-
 @Entity('project')
 export class Project {
   @PrimaryGeneratedColumn('uuid')
@@ -43,23 +37,19 @@ export class Project {
 
   @Column({
     type: 'enum',
-    enum: ProjectStatus,
-    default: ProjectStatus.PENDING,
+    enum: ['pending', 'approved', 'rejected'],
+    default: 'pending',
   })
-  status!: ProjectStatus;
+  status!: 'pending' | 'approved' | 'rejected';
 
-  @ManyToOne(() => User, (user) => user.mentorProjects, {
-    nullable: true,
-    onDelete: 'SET NULL',
-  })
-  @JoinColumn({ name: 'mentor_id' })
-  mentor!: User;
+  @ManyToOne(() => User, (user) => user.studentProjects)
+  student: User;
 
-  @ManyToOne(() => User, (user) => user.studentProjects, {
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn({ name: 'student_id' })
-  student!: User;
+  @ManyToOne(() => User, (user) => user.mentorProjects)
+  mentor: User;
+
+  @Column({ nullable: true })
+  feedback!: string;
 
   @CreateDateColumn()
   createdAt!: Date;

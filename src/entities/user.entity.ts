@@ -14,6 +14,7 @@ import { Company } from './company.entity';
 import { Job } from './job.entity';
 import { Application } from './application.entity';
 import { Assignment } from './assignment.entity';
+import { Internship } from './internship.entity';
 
 @Entity('user')
 export class User {
@@ -33,7 +34,7 @@ export class User {
   @ApiProperty({ example: 'hashedpassword123' })
   password!: string;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   @ApiProperty({ example: '1st Year' })
   year!: number;
 
@@ -41,9 +42,36 @@ export class User {
   @ApiProperty({ example: 'Computer Science' })
   branch!: string;
 
-  @Column({})
-  @ApiProperty({ example: 'student' })
-  role!: string;
+  @Column({
+    type: 'enum',
+    enum: ['admin', 'recruiter', 'student', 'mentor'],
+    default: 'student',
+  })
+  role!: 'admin' | 'recruiter' | 'student' | 'mentor';
+
+  @OneToMany(() => Project, (project) => project.student)
+  studentProjects!: Project[];
+
+  @OneToMany(() => Project, (project) => project.mentor)
+  mentorProjects!: Project[];
+
+  @OneToMany(() => Internship, (internship) => internship.student)
+  studentInternship: Internship[];
+
+  @OneToMany(() => Internship, (internship) => internship.mentor)
+  mentorInternship: Internship[];
+
+  // @OneToOne(() => Company, (company) => company.user)
+  // company!: Company;
+
+  // @OneToMany(() => Job, (job) => job.user)
+  // jobs!: Job[];
+
+  // @OneToMany(() => Application, (application) => application.student)
+  // applications!: Application[];
+
+  // @OneToMany(() => Assignment, (assignment) => assignment.student)
+  // assignments!: Assignment[];
 
   @Column({ default: false })
   @ApiProperty({ example: false })
@@ -53,30 +81,12 @@ export class User {
   @ApiProperty({ example: false })
   isDeleted!: boolean;
 
-  @OneToMany(() => Project, (project) => project.student)
-  studentProjects!: Project[];
-
-  @OneToMany(() => Project, (project) => project.mentor)
-  mentorProjects!: Project[];
-
   @Column({
     type: 'enum',
     enum: ['pending', 'approved', 'rejected'],
     default: 'pending',
   })
   status!: 'pending' | 'approved' | 'rejected';
-
-  @OneToOne(() => Company, (company) => company.user)
-  company!: Company;
-
-  @OneToMany(() => Job, (job) => job.user)
-  jobs!: Job[];
-
-  @OneToMany(() => Application, (application) => application.student)
-  applications!: Application[];
-
-  @OneToMany(() => Assignment, (assignment) => assignment.student)
-  assignments!: Assignment[];
 
   @CreateDateColumn()
   createdAt!: Date;

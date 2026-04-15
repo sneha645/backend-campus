@@ -14,8 +14,9 @@ import { CreateStudentDto } from 'src/dtos/student.dto';
 import { CreateRecruiterDto } from 'src/dtos/recruiter.dto';
 import { AuthDto } from 'src/dtos/auth.dto';
 import { AuthService } from './auth.service';
-import { createMentorDto } from 'src/dtos/mentor.dto';
+
 import { JwtAuthGuard } from './jwt-auth.guard';
+import { CreateMentorDto } from 'src/dtos/mentor.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -42,7 +43,7 @@ export class AuthController {
   @ApiResponse({ status: 409, description: 'Mentor already exists' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async registerMentor(
-    @Body() createMentorDto: createMentorDto,
+    @Body() createMentorDto: CreateMentorDto,
     @Request() req: any,
   ): Promise<any> {
     return this.authService.createMentor(createMentorDto);

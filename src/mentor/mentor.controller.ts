@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Request,
   UseGuards,
@@ -28,13 +29,16 @@ export class MentorController {
     return this.mentorService.getAllProjects(req.user.userId);
   }
 
-  @Post('approveProject/:id')
+  @Patch('approveProject/:id')
   @ApiOperation({ summary: 'Approve project' })
   @ApiResponse({ status: 200, description: 'Project approved successfully' })
   @ApiResponse({ status: 400, description: 'Invalid request' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
-  async approveProject(@Param('id') id: string): Promise<any> {
-    return this.mentorService.approveProject(id);
+  async approveProject(
+    @Param('id') id: string,
+    @Body() dto: { status: 'approved' | 'rejected'; feedback: string },
+  ): Promise<any> {
+    return this.mentorService.approveProject(id, dto);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -55,8 +59,6 @@ export class MentorController {
   async approveInternship(@Param('id') id: string): Promise<any> {
     return this.mentorService.approveInternship(id);
   }
-
-
 
   @Get('projects/:id')
   @ApiOperation({ summary: 'Get project by id' })

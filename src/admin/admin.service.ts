@@ -18,28 +18,26 @@ export class AdminService {
     private readonly userRepo: Repository<User>,
   ) {}
 
-  async approveRecruiter(id: string) {
-    console.log('approved service run');
+  async approve(id: string) {
     const user = await this.userRepo.findOne({ where: { user_id: id } });
-    console.log('user', user);
+
     if (!user) {
       throw new Error('User not found');
     }
     user.status = 'approved';
     await this.userRepo.save(user);
-    return { message: 'Recruiter approved successfully' };
+    return { message: 'Approved successfully' };
   }
 
-  async rejectRecruiter(id: string) {
-    console.log('reject service run');
+  async reject(id: string) {
     const user = await this.userRepo.findOne({ where: { user_id: id } });
-    console.log('user', user);
+
     if (!user) {
       throw new Error('User not found');
     }
     user.status = 'rejected';
     await this.userRepo.save(user);
-    return { message: 'Recruiter reject successfully' };
+    return { message: ' reject successfully' };
   }
 
   async getPendingRecruiters() {

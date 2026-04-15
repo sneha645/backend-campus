@@ -16,7 +16,7 @@ import { CreateRecruiterDto } from 'src/dtos/recruiter.dto';
 import { AuthDto } from 'src/dtos/auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { MailService } from 'src/mail/mail.service';
-import { createMentorDto } from 'src/dtos/mentor.dto';
+import { CreateMentorDto } from 'src/dtos/mentor.dto';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -83,19 +83,32 @@ export class AuthService {
     }
   }
 
-  async createMentor(createMentorDto: createMentorDto): Promise<any> {
+  async createMentor(createMentorDto: CreateMentorDto): Promise<any> {
     try {
-      const { name, email, password, role } = createMentorDto;
+      const {
+        name,
+        email,
+        password,
+        role,
+        department,
+        specialization,
+        experience,
+      } = createMentorDto;
+
       const existingUser = await this.findByEmail(email);
       if (existingUser) {
         throw new ConflictException('User already exists');
       }
+
       const hashedPassword = await bcrypt.hash(password, 10);
       const user = await this.create({
         name,
         email,
         password: hashedPassword,
         role,
+        department,
+        specialization,
+        experience,
       });
 
       const token = this.jwtService.sign({
@@ -105,7 +118,10 @@ export class AuthService {
 
       await this.userRepo.save(user);
 
+      const adminMail = this.configService.get<string>('ADMIN_EMAIL')!;
+
       await this.mailService.sendVerificationEmail(user.email, token);
+      await this.mailService.sendMentorApprovalRequest(adminMail, user.email);
 
       return {
         message: 'Mentor registered successfully, Please verify your email',

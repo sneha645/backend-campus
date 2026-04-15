@@ -27,22 +27,34 @@ export class MentorService {
   async getAllProjects(userId: string) {
     return this.projectRepo.find({
       where: { mentor: { user_id: userId } },
+      relations: ['student'],
     });
   }
 
-  async approveProject(id: string) {
-    return this.projectRepo.update(id, { status: ProjectStatus.APPROVED });
+  async approveProject(
+    id: string,
+    dto: { status: 'approved' | 'rejected'; feedback: string },
+  ) {
+    return this.internshipRepo.update(id, {
+      status: dto.status,
+      feedback: dto.feedback,
+    });
   }
 
   async getAllInternships(userId: string) {
-    return this.internshipRepo.find({
+    return this.projectRepo.find({
       where: { mentor: { user_id: userId } },
+      relations: ['student'],
     });
   }
 
-  async approveInternship(id: string) {
+  async approveInternship(
+    id: string,
+    dto: { status: 'approved' | 'rejected'; feedback: string },
+  ) {
     return this.internshipRepo.update(id, {
-      status: InternshipStatus.APPROVED,
+      status: dto.status,
+      feedback: dto.feedback,
     });
   }
 
@@ -69,5 +81,4 @@ export class MentorService {
       where: { status: 'submitted' },
     });
   }
-
 }

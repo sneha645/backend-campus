@@ -46,8 +46,6 @@ export class StudentService {
     studentId: string,
   ): Promise<any> {
     try {
-      const { mentorId, ...projectData } = uploadProjectDto;
-
       const student = await this.userRepo.findOne({
         where: { user_id: studentId },
       });
@@ -57,7 +55,7 @@ export class StudentService {
       }
 
       const mentor = await this.userRepo.findOne({
-        where: { user_id: mentorId },
+        where: { user_id: uploadProjectDto.mentorId, role: 'mentor' },
       });
 
       if (!mentor) {
@@ -65,8 +63,8 @@ export class StudentService {
       }
 
       const project = this.projectRepo.create({
-        ...projectData,
-        student: student,
+        ...uploadProjectDto,
+        student: { user_id: studentId },
         mentor: mentor,
         imageUrl: image ? `/uploads/images/${image.filename}` : undefined,
       });
@@ -85,25 +83,12 @@ export class StudentService {
     }
   }
 
-  async getMyProjects(studentId: string): Promise<any> {
-    try {
-      const projects = await this.projectRepo.find({
-        where: { student: { user_id: studentId } },
-      });
-      return projects;
-    } catch (error) {
-      throw new InternalServerErrorException('Failed to get projects');
-    }
-  }
-
   async uploadInternship(
     uploadInternshipDto: UploadInternshipDto,
-    certificateImage: Express.Multer.File,
+    certificateUrl: Express.Multer.File,
     studentId: string,
   ): Promise<any> {
     try {
-      const { mentorId, ...internshipData } = uploadInternshipDto;
-
       const student = await this.userRepo.findOne({
         where: { user_id: studentId },
       });
@@ -113,7 +98,7 @@ export class StudentService {
       }
 
       const mentor = await this.userRepo.findOne({
-        where: { user_id: mentorId },
+        where: { user_id: uploadInternshipDto.mentorId, role: 'mentor' },
       });
 
       if (!mentor) {
@@ -121,11 +106,11 @@ export class StudentService {
       }
 
       const internship = this.internshipRepo.create({
-        ...internshipData,
-        student: student,
+        ...uploadInternshipDto,
+        student: { user_id: studentId },
         mentor: mentor,
-        certificateImage: certificateImage
-          ? `/uploads/images/${certificateImage.filename}`
+        certificateUrl: certificateUrl
+          ? `/uploads/images/${certificateUrl.filename}`
           : undefined,
       });
 
@@ -142,6 +127,16 @@ export class StudentService {
       throw new InternalServerErrorException('Failed to upload project');
     }
   }
+  async getMyProjects(studentId: string): Promise<any> {
+    try {
+      const projects = await this.projectRepo.find({
+        where: { student: { user_id: studentId } },
+      });
+      return projects;
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to get projects');
+    }
+  }
 
   async getMyInternships(studentId: string): Promise<any> {
     try {
@@ -154,85 +149,85 @@ export class StudentService {
     }
   }
 
-  async getProfile(studentId: string): Promise<any> {
-    try {
-      const student = await this.userRepo.findOne({
-        where: { user_id: studentId },
-      });
-      return student;
-    } catch (error) {
-      throw new InternalServerErrorException('Failed to get profile');
-    }
-  }
+  // async getProfile(studentId: string): Promise<any> {
+  //   try {
+  //     const student = await this.userRepo.findOne({
+  //       where: { user_id: studentId },
+  //     });
+  //     return student;
+  //   } catch (error) {
+  //     throw new InternalServerErrorException('Failed to get profile');
+  //   }
+  // }
 
-  async updateProfile(
-    updateStudentProfileDto: UpdateStudentProfileDto,
-    studentId: string,
-  ): Promise<any> {
-    try {
-      const student = await this.userRepo.findOne({
-        where: { user_id: studentId },
-      });
+  // async updateProfile(
+  //   updateStudentProfileDto: UpdateStudentProfileDto,
+  //   studentId: string,
+  // ): Promise<any> {
+  //   try {
+  //     const student = await this.userRepo.findOne({
+  //       where: { user_id: studentId },
+  //     });
 
-      if (!student) {
-        throw new NotFoundException('Student not found');
-      }
+  //     if (!student) {
+  //       throw new NotFoundException('Student not found');
+  //     }
 
-      student.name = updateStudentProfileDto.name;
-      student.year = updateStudentProfileDto.year;
-      student.branch = updateStudentProfileDto.branch;
+  //     student.name = updateStudentProfileDto.name;
+  //     student.year = updateStudentProfileDto.year;
+  //     student.branch = updateStudentProfileDto.branch;
 
-      const response = await this.userRepo.save(student);
-      return {
-        message: 'Profile updated successfully',
-        student: response,
-      };
-    } catch (error) {
-      throw new InternalServerErrorException('Failed to update profile');
-    }
-  }
+  //     const response = await this.userRepo.save(student);
+  //     return {
+  //       message: 'Profile updated successfully',
+  //       student: response,
+  //     };
+  //   } catch (error) {
+  //     throw new InternalServerErrorException('Failed to update profile');
+  //   }
+  // }
 
-  async getJobs(): Promise<any> {
-    try {
-      const jobs = await this.jobRepo.find();
-      return jobs;
-    } catch (error) {
-      throw new InternalServerErrorException('Failed to get jobs');
-    }
-  }
+  // async getJobs(): Promise<any> {
+  //   try {
+  //     const jobs = await this.jobRepo.find();
+  //     return jobs;
+  //   } catch (error) {
+  //     throw new InternalServerErrorException('Failed to get jobs');
+  //   }
+  // }
 
-  async getAllAssignments(collageYear: string): Promise<any> {
-    try {
-      const assignments = await this.assignmentRepo.find({
-        where: { student: { year: collageYear } },
-      });
-      return assignments;
-    } catch (error) {
-      throw new InternalServerErrorException('Failed to get assignments');
-    }
-  }
+  // async getAllAssignments(collageYear: string): Promise<any> {
+  //   try {
+  //     const assignments = await this.assignmentRepo.find({
+  //       where: { student: { year: collageYear } },
+  //     });
+  //     return assignments;
+  //   } catch (error) {
+  //     throw new InternalServerErrorException('Failed to get assignments');
+  //   }
+  // }
 
-  async submitAssignment(
-    file: Express.Multer.File,
-    studentId: string,
-  ): Promise<any> {
-    try {
-      const assignment = this.assignmentRepo.create({
-        file: file ? `/uploads/images/${file.filename}` : undefined,
-        student: { user_id: studentId },
-      });
+  // async submitAssignment(
+  //   file: Express.Multer.File,
+  //   studentId: string,
+  // ): Promise<any> {
+  //   try {
+  //     const assignment = this.assignmentRepo.create({
+  //       file: file ? `/uploads/images/${file.filename}` : undefined,
+  //       student: { user_id: studentId },
+  //     });
 
-      assignment.status = 'submitted';
-      assignment.submitted_at = new Date().toISOString();
-      const response = await this.assignmentRepo.save(assignment);
-      return {
-        message: 'Assignment submitted successfully',
-        assignment: response,
-      };
-    } catch (error) {
-      throw new InternalServerErrorException('Failed to submit assignment');
-    }
-  }
+  //     assignment.status = 'submitted';
+  //     assignment.submitted_at = new Date().toISOString();
+  //     const response = await this.assignmentRepo.save(assignment);
+  //     return {
+  //       message: 'Assignment submitted successfully',
+  //       assignment: response,
+  //     };
+  //   } catch (error) {
+  //     throw new InternalServerErrorException('Failed to submit assignment');
+  //   }
+  // }
 
   // async getAllStudents(): Promise<any> {
   //   try {
