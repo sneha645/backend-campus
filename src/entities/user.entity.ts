@@ -33,9 +33,9 @@ export class User {
   @ApiProperty({ example: 'hashedpassword123' })
   password!: string;
 
-  @Column()
+  @Column({nullable: true})
   @ApiProperty({ example: '1st Year' })
-  year!: string;
+  year!: number;
 
   @Column()
   @ApiProperty({ example: 'Computer Science' })
