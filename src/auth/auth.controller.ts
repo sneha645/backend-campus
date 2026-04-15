@@ -49,6 +49,7 @@ export class AuthController {
     return this.authService.createMentor(createMentorDto);
   }
 
+  // recruiter registration
   @Post('register-recruiter')
   @ApiOperation({ summary: 'Register a new recruiter ' })
   @ApiResponse({
@@ -60,11 +61,11 @@ export class AuthController {
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async registerRequiter(
     @Body() createRecruiterDto: CreateRecruiterDto,
-    @Request() req: any,
   ): Promise<any> {
     return this.authService.createRecruiter(createRecruiterDto);
   }
 
+  // user login
   @Post('login')
   @ApiOperation({ summary: 'Login' })
   @ApiResponse({ status: 200, description: 'Login successful' })

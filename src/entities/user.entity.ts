@@ -34,6 +34,13 @@ export class User {
   @ApiProperty({ example: 'hashedpassword123' })
   password!: string;
 
+  @Column({
+    type: 'enum',
+    enum: ['admin', 'recruiter', 'student', 'mentor'],
+    default: 'student',
+  })
+  role!: 'admin' | 'recruiter' | 'student' | 'mentor';
+
   @Column({ nullable: true })
   @ApiProperty({ example: '1st Year' })
   year!: string;
@@ -41,13 +48,6 @@ export class User {
   @Column({ nullable: true })
   @ApiProperty({ example: 'Computer Science' })
   branch!: string;
-
-  @Column({
-    type: 'enum',
-    enum: ['admin', 'recruiter', 'student', 'mentor'],
-    default: 'student',
-  })
-  role!: 'admin' | 'recruiter' | 'student' | 'mentor';
 
   @OneToMany(() => Project, (project) => project.student)
   studentProjects!: Project[];

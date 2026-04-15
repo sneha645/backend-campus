@@ -134,10 +134,10 @@ export class AuthService {
     }
   }
 
+  // create recruiter
   async createRecruiter(createRecruiterDto: CreateRecruiterDto): Promise<any> {
     try {
       const { name, email, password, role } = createRecruiterDto;
-      console.log('recruiter service run');
 
       const existingUser = await this.findByEmail(email);
       if (existingUser) {
