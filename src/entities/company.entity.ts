@@ -50,9 +50,9 @@ export class Company {
   @ApiProperty({ example: 'https://google.com' })
   location!: string;
 
-  @OneToOne(() => User, (user) => user.company)
-  @JoinColumn({ name: 'user_id' })
-  user!: User;
+  // @OneToOne(() => User, (user) => user.company)
+  // @JoinColumn({ name: 'user_id' })
+  // user!: User;
 
   @CreateDateColumn()
   createdAt!: Date;

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Project, ProjectStatus } from 'src/entities/project.entity';
+import { Project } from 'src/entities/project.entity';
 import { User } from 'src/entities/user.entity';
-import { Internship, InternshipStatus } from 'src/entities/internship.entity';
+import { Internship } from 'src/entities/internship.entity';
 import { AssignmentDto } from 'src/dtos/assignment.dto';
 import { Assignment } from 'src/entities/assignment.entity';
 import { FeedbackDto } from 'src/dtos/feedback.dto';
@@ -70,11 +70,11 @@ export class MentorService {
     return this.assignmentRepo.save(assignmentDto);
   }
 
-  async getAllAssignments(userId: string) {
-    return this.assignmentRepo.find({
-      where: { mentor: { user_id: userId } },
-    });
-  }
+  // async getAllAssignments(userId: string) {
+  //   return this.assignmentRepo.find({
+  //     where: { mentor: { user_id: userId } },
+  //   });
+  // }
 
   async getSubmittedAssignments() {
     return this.assignmentRepo.find({

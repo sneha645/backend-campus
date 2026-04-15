@@ -64,8 +64,8 @@ export class Job {
   @ApiProperty({ example: 'open', enum: ['open', 'closed', 'draft'] })
   status!: string;
 
-  @ManyToOne(() => User, (user) => user.jobs)
-  user!: User;
+  // @ManyToOne(() => User, (user) => user.jobs)
+  // user!: User;
 
   @OneToMany(() => Application, (application) => application.job)
   applications!: Application[];

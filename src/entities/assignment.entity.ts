@@ -6,11 +6,11 @@ export class Assignment {
   @PrimaryGeneratedColumn('uuid')
   assignment_id: string;
 
-  @ManyToOne(() => User, (user) => user.assignments)
-  student: User;
+  // @ManyToOne(() => User, (user) => user.assignments)
+  // student: User;
 
-  @ManyToOne(() => User, (user) => user.assignments)
-  mentor: User;
+  // @ManyToOne(() => User, (user) => user.assignments)
+  // mentor: User;
 
   @Column()
   assignment_title: string;

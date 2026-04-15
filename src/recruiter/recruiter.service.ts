@@ -51,10 +51,10 @@ export class RecruiterService {
 
     const profile = this.companyRepo.create(dto);
     console.log('profile', profile);
-    profile.user = user;
+    // profile.user = user;
     profile.logoUrl = logo ? `/uploads/images/${logo.filename}` : '';
 
-    user.company = profile;
+    // user.company = profile;
     console.log('user', user);
     await this.userRepo.save(user);
 
@@ -77,11 +77,11 @@ export class RecruiterService {
       where: { user_id: userId },
       relations: ['company'],
     });
-    if (!user || !user.company) {
-      throw new NotFoundException('Company profile not found');
-    }
-    delete (user.company as any).user;
-    return user.company;
+    // if (!user || !user.company) {
+    //   throw new NotFoundException('Company profile not found');
+    // }
+    // delete (user.company as any).user;
+    // return user.company;
   }
 
   async createJob(userId: string, dto: JobDto) {
@@ -90,13 +90,13 @@ export class RecruiterService {
       throw new NotFoundException('User not found');
     }
 
-    const job = this.jobRepo.create(dto);
-    job.user = user;
-    await this.jobRepo.save(job);
-    return {
-      message: 'Job created successfully',
-      data: job,
-    };
+    // const job = this.jobRepo.create(dto);
+    // job.user = user;
+    // await this.jobRepo.save(job);
+    // return {
+    //   message: 'Job created successfully',
+    //   data: job,
+    // };
   }
 
   async getMyJobs(userId: string) {
@@ -104,10 +104,10 @@ export class RecruiterService {
       where: { user_id: userId },
       relations: ['jobs'],
     });
-    if (!user || !user.jobs) {
-      throw new NotFoundException('Job postings not found');
-    }
-    return user.jobs;
+    // if (!user || !user.jobs) {
+    //   throw new NotFoundException('Job postings not found');
+    // }
+    // return user.jobs;
   }
 
   async getApplications(jobId: string) {

@@ -7,8 +7,8 @@ export class Application {
   @PrimaryGeneratedColumn('uuid')
   application_id: string;
 
-  @ManyToOne(() => User, (user) => user.applications)
-  student: User;
+  // @ManyToOne(() => User, (user) => user.applications)
+  // student: User;
 
   @ManyToOne(() => Job, (job) => job.applications)
   job: Job;

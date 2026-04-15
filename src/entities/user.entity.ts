@@ -36,9 +36,9 @@ export class User {
 
   @Column({ nullable: true })
   @ApiProperty({ example: '1st Year' })
-  year!: number;
+  year!: string;
 
-  @Column()
+  @Column({ nullable: true })
   @ApiProperty({ example: 'Computer Science' })
   branch!: string;
 

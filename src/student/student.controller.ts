@@ -82,67 +82,67 @@ export class StudentController {
     return this.studentService.getMyInternships(req.user.userId);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Get('getProfile')
-  @ApiOperation({ summary: 'Get profile' })
-  @ApiResponse({ status: 201, description: 'Profile fetched successfully' })
-  @ApiResponse({ status: 400, description: 'Invalid request' })
-  @ApiResponse({ status: 500, description: 'Internal server error' })
-  async getProfile(@Request() req: any): Promise<any> {
-    return this.studentService.getProfile(req.user.userId);
-  }
+  // @UseGuards(JwtAuthGuard)
+  // @Get('getProfile')
+  // @ApiOperation({ summary: 'Get profile' })
+  // @ApiResponse({ status: 201, description: 'Profile fetched successfully' })
+  // @ApiResponse({ status: 400, description: 'Invalid request' })
+  // @ApiResponse({ status: 500, description: 'Internal server error' })
+  // async getProfile(@Request() req: any): Promise<any> {
+  //   return this.studentService.getProfile(req.user.userId);
+  // }
 
-  @UseGuards(JwtAuthGuard)
-  @Put('updateProfile')
-  @ApiOperation({ summary: 'Update profile' })
-  @ApiResponse({ status: 201, description: 'Profile updated successfully' })
-  @ApiResponse({ status: 400, description: 'Invalid request' })
-  @ApiResponse({ status: 500, description: 'Internal server error' })
-  async updateProfile(
-    @Body() updateProfileDto: UpdateStudentProfileDto,
-    @Request() req: any,
-  ): Promise<any> {
-    return this.studentService.updateProfile(updateProfileDto, req.user.userId);
-  }
+  // @UseGuards(JwtAuthGuard)
+  // @Put('updateProfile')
+  // @ApiOperation({ summary: 'Update profile' })
+  // @ApiResponse({ status: 201, description: 'Profile updated successfully' })
+  // @ApiResponse({ status: 400, description: 'Invalid request' })
+  // @ApiResponse({ status: 500, description: 'Internal server error' })
+  // async updateProfile(
+  //   @Body() updateProfileDto: UpdateStudentProfileDto,
+  //   @Request() req: any,
+  // ): Promise<any> {
+  //   return this.studentService.updateProfile(updateProfileDto, req.user.userId);
+  // }
 
-  @UseGuards(JwtAuthGuard)
-  @Get('jobs')
-  @ApiOperation({ summary: 'Get all jobs' })
-  @ApiResponse({ status: 201, description: 'Jobs fetched successfully' })
-  @ApiResponse({ status: 400, description: 'Invalid request' })
-  @ApiResponse({ status: 500, description: 'Internal server error' })
-  async getJobs(): Promise<any> {
-    return this.studentService.getJobs();
-  }
+  // @UseGuards(JwtAuthGuard)
+  // @Get('jobs')
+  // @ApiOperation({ summary: 'Get all jobs' })
+  // @ApiResponse({ status: 201, description: 'Jobs fetched successfully' })
+  // @ApiResponse({ status: 400, description: 'Invalid request' })
+  // @ApiResponse({ status: 500, description: 'Internal server error' })
+  // async getJobs(): Promise<any> {
+  //   return this.studentService.getJobs();
+  // }
 
-  @UseGuards(JwtAuthGuard)
-  @Get('assignments/:collageYear')
-  @ApiOperation({ summary: 'Get all assignments' })
-  @ApiResponse({ status: 200, description: 'List of assignments' })
-  @ApiResponse({ status: 400, description: 'Invalid request' })
-  @ApiResponse({ status: 500, description: 'Internal server error' })
-  async getAllAssignments(
-    @Param('collageYear') collageYear: string,
-  ): Promise<any> {
-    return this.studentService.getAllAssignments(collageYear);
-  }
+  // @UseGuards(JwtAuthGuard)
+  // @Get('assignments/:collageYear')
+  // @ApiOperation({ summary: 'Get all assignments' })
+  // @ApiResponse({ status: 200, description: 'List of assignments' })
+  // @ApiResponse({ status: 400, description: 'Invalid request' })
+  // @ApiResponse({ status: 500, description: 'Internal server error' })
+  // async getAllAssignments(
+  //   @Param('collageYear') collageYear: string,
+  // ): Promise<any> {
+  //   return this.studentService.getAllAssignments(collageYear);
+  // }
 
-  @UseGuards(JwtAuthGuard)
-  @Post('submitAssignment')
-  @UseInterceptors(FileInterceptor('file', multerConfig))
-  @ApiOperation({ summary: 'Submit an assignment' })
-  @ApiResponse({
-    status: 201,
-    description: 'Assignment submitted successfully',
-  })
-  @ApiResponse({ status: 400, description: 'Invalid request' })
-  @ApiResponse({ status: 500, description: 'Internal server error' })
-  async submitAssignment(
-    @UploadedFile() file: Express.Multer.File,
-    @Request() req: any,
-  ): Promise<any> {
-    return this.studentService.submitAssignment(file, req.user.userId);
-  }
+  // @UseGuards(JwtAuthGuard)
+  // @Post('submitAssignment')
+  // @UseInterceptors(FileInterceptor('file', multerConfig))
+  // @ApiOperation({ summary: 'Submit an assignment' })
+  // @ApiResponse({
+  //   status: 201,
+  //   description: 'Assignment submitted successfully',
+  // })
+  // @ApiResponse({ status: 400, description: 'Invalid request' })
+  // @ApiResponse({ status: 500, description: 'Internal server error' })
+  // async submitAssignment(
+  //   @UploadedFile() file: Express.Multer.File,
+  //   @Request() req: any,
+  // ): Promise<any> {
+  //   return this.studentService.submitAssignment(file, req.user.userId);
+  // }
 
   // @UseGuards(JwtAuthGuard)
   // @Get('all')
