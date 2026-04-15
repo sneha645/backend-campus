@@ -15,8 +15,6 @@ import { UploadInternshipDto } from 'src/dtos/internship.dto';
 import { Internship } from 'src/entities/internship.entity';
 import { Job } from 'src/entities/job.entity';
 import { Application } from 'src/entities/application.entity';
-import { UpdateStudentProfileDto } from 'src/dtos/updateStudentProfile.dto';
-import { Assignment } from 'src/entities/assignment.entity';
 
 @Injectable()
 export class StudentService {
@@ -35,21 +33,18 @@ export class StudentService {
 
     @InjectRepository(Application)
     private readonly applicationRepo: Repository<Application>,
-
-    @InjectRepository(Assignment)
-    private readonly assignmentRepo: Repository<Assignment>,
   ) {}
 
+  // upload project
   async uploadProject(
     uploadProjectDto: UploadProjectDto,
-    image: Express.Multer.File,
+    projectImage: Express.Multer.File,
     studentId: string,
   ): Promise<any> {
     try {
       const student = await this.userRepo.findOne({
         where: { user_id: studentId },
       });
-
       if (!student) {
         throw new NotFoundException('Student not found');
       }
@@ -57,16 +52,17 @@ export class StudentService {
       const mentor = await this.userRepo.findOne({
         where: { user_id: uploadProjectDto.mentorId, role: 'mentor' },
       });
-
       if (!mentor) {
         throw new NotFoundException('Mentor not found');
       }
 
       const project = this.projectRepo.create({
         ...uploadProjectDto,
-        student: { user_id: studentId },
+        student: student,
         mentor: mentor,
-        imageUrl: image ? `/uploads/images/${image.filename}` : undefined,
+        imageUrl: projectImage
+          ? `/uploads/images/${projectImage.filename}`
+          : undefined,
       });
 
       const response = await this.projectRepo.save(project);
@@ -83,9 +79,10 @@ export class StudentService {
     }
   }
 
+  // upload internship
   async uploadInternship(
     uploadInternshipDto: UploadInternshipDto,
-    certificateUrl: Express.Multer.File,
+    certificateImage: Express.Multer.File,
     studentId: string,
   ): Promise<any> {
     try {
@@ -107,10 +104,10 @@ export class StudentService {
 
       const internship = this.internshipRepo.create({
         ...uploadInternshipDto,
-        student: { user_id: studentId },
+        student: student,
         mentor: mentor,
-        certificateUrl: certificateUrl
-          ? `/uploads/images/${certificateUrl.filename}`
+        certificateUrl: certificateImage
+          ? `/uploads/images/${certificateImage.filename}`
           : undefined,
       });
 

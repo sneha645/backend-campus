@@ -5,7 +5,6 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
-  JoinColumn,
 } from 'typeorm';
 import { User } from './user.entity';
 
@@ -43,10 +42,10 @@ export class Project {
   status!: 'pending' | 'approved' | 'rejected';
 
   @ManyToOne(() => User, (user) => user.studentProjects)
-  student: User;
+  student!: User;
 
   @ManyToOne(() => User, (user) => user.mentorProjects)
-  mentor: User;
+  mentor!: User;
 
   @Column({ nullable: true })
   feedback!: string;

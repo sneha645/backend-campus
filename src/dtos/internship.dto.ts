@@ -9,33 +9,33 @@ import {
 export class UploadInternshipDto {
   @IsString()
   @IsNotEmpty()
-  title: string;
+  title!: string;
 
   @IsString()
   @IsNotEmpty()
-  description: string;
+  description!: string;
 
   @IsString()
   @IsNotEmpty()
-  company: string;
+  company!: string;
 
   @IsDateString()
   @IsNotEmpty()
-  startDate: string;
+  startDate!: string;
 
   @IsDateString()
   @IsNotEmpty()
-  endDate: string;
+  endDate!: string;
 
   @IsString()
   @IsOptional()
-  technologies: string;
+  technologies!: string;
 
   @IsUrl()
   @IsOptional()
-  projectUrl: string;
+  projectUrl!: string;
 
   @IsString()
   @IsNotEmpty()
-  mentorId: string;
+  mentorId!: string;
 }

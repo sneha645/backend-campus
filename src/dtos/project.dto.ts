@@ -9,33 +9,33 @@ import {
 export class UploadProjectDto {
   @IsString()
   @IsNotEmpty()
-  title: string;
+  title!: string;
 
   @IsString()
   @IsNotEmpty()
-  description: string;
+  description!: string;
 
   @IsDateString()
   @IsNotEmpty()
-  startDate: string;
+  startDate!: string;
 
   @IsDateString()
   @IsNotEmpty()
-  endDate: string;
+  endDate!: string;
 
   @IsString()
   @IsOptional()
-  technologies?: string;
+  technologies!: string;
 
   @IsUrl()
   @IsOptional()
-  projectUrl?: string;
+  projectUrl!: string;
 
   @IsUrl()
   @IsOptional()
-  githubUrl?: string;
+  githubUrl!: string;
 
   @IsString()
   @IsNotEmpty()
-  mentorId: string;
+  mentorId!: string;
 }

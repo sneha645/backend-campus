@@ -1,40 +1,33 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsEmail,
-  IsString,
-  MinLength,
-  IsBoolean,
-  IsOptional,
-  IsNumber,
-} from 'class-validator';
+import { IsEmail, IsString, MinLength, IsNumber } from 'class-validator';
 
 export class CreateMentorDto {
   @ApiProperty({ example: 'John Doe' })
   @IsString()
-  name: string;
+  name!: string;
 
   @ApiProperty({ example: 'johndoe@gmail.com' })
   @IsEmail()
-  email: string;
+  email!: string;
 
   @ApiProperty({ example: 'password123' })
   @IsString()
   @MinLength(6)
-  password: string;
+  password!: string;
 
   @ApiProperty({ example: 'computer science' })
   @IsString()
-  department: string;
+  department!: string;
 
   @ApiProperty({ example: 'DSA' })
   @IsString()
-  specialization: string;
+  specialization!: string;
 
   @ApiProperty({ example: 2 })
   @IsNumber()
-  experience: number;
+  experience!: number;
 
   @ApiProperty({ example: 'mentor' })
   @IsString()
-  role: string;
+  role!: string;
 }

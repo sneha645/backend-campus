@@ -24,25 +24,27 @@ import { UpdateStudentProfileDto } from 'src/dtos/updateStudentProfile.dto';
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
+  // upload project
   @UseGuards(JwtAuthGuard)
   @Post('project')
-  @UseInterceptors(FileInterceptor('image', multerConfig))
+  @UseInterceptors(FileInterceptor('projectImage', multerConfig))
   @ApiOperation({ summary: 'Upload a new project' })
   @ApiResponse({ status: 201, description: 'Project uploaded successfully' })
   @ApiResponse({ status: 400, description: 'Invalid request' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async uploadProject(
-    @UploadedFile() image: Express.Multer.File,
+    @UploadedFile() projectImage: Express.Multer.File,
     @Body() uploadProjectDto: UploadProjectDto,
     @Request() req: any,
   ): Promise<any> {
     return this.studentService.uploadProject(
       uploadProjectDto,
-      image,
+      projectImage,
       req.user.userId,
     );
   }
 
+  // upload internship
   @UseGuards(JwtAuthGuard)
   @Post('internship')
   @UseInterceptors(FileInterceptor('certificateImage', multerConfig))
@@ -51,13 +53,13 @@ export class StudentController {
   @ApiResponse({ status: 400, description: 'Invalid request' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async uploadInternship(
-    @UploadedFile() certificateUrl: Express.Multer.File,
+    @UploadedFile() certificateImage: Express.Multer.File,
     @Body() uploadInternshipDto: UploadInternshipDto,
     @Request() req: any,
   ): Promise<any> {
     return this.studentService.uploadInternship(
       uploadInternshipDto,
-      certificateUrl,
+      certificateImage,
       req.user.userId,
     );
   }

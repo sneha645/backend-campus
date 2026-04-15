@@ -23,6 +23,7 @@ import { CreateMentorDto } from 'src/dtos/mentor.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  // student registration
   @Post('register-student')
   @ApiOperation({ summary: 'Register a new student' })
   @ApiResponse({ status: 201, description: 'Student registered successfully' })
@@ -35,6 +36,7 @@ export class AuthController {
     return this.authService.createStudent(createStudentDto);
   }
 
+  // recruiter registration
   @Post('register-mentor')
   @ApiOperation({ summary: 'Register a new mentor' })
   @ApiResponse({ status: 201, description: 'Mentor registered successfully' })

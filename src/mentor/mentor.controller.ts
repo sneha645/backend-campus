@@ -12,7 +12,6 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { MentorService } from './mentor.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { AssignmentDto } from 'src/dtos/assignment.dto';
-import { FeedbackDto } from 'src/dtos/feedback.dto';
 
 @ApiTags('Mentor')
 @Controller('mentor')

@@ -6,7 +6,6 @@ import { User } from 'src/entities/user.entity';
 import { Internship } from 'src/entities/internship.entity';
 import { AssignmentDto } from 'src/dtos/assignment.dto';
 import { Assignment } from 'src/entities/assignment.entity';
-import { FeedbackDto } from 'src/dtos/feedback.dto';
 
 @Injectable()
 export class MentorService {
