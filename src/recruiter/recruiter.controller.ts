@@ -32,23 +32,24 @@ export class RecruiterController {
     return this.recruiterService.findAll();
   }
 
+  //create company profile
   @UseGuards(JwtAuthGuard)
   @Post('createCompanyProfile')
-  @UseInterceptors(FileInterceptor('logo', multerConfig))
+  @UseInterceptors(FileInterceptor('companyLogo', multerConfig))
   @ApiOperation({ summary: 'Create recruiter company profile' })
   @ApiResponse({ status: 201, description: 'Profile created successfully' })
   @ApiResponse({ status: 400, description: 'Invalid request' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async createProfile(
     @Body() createCompanyProfileDto: CreateCompanyProfileDto,
-    @UploadedFile() logo: Express.Multer.File,
+    @UploadedFile() companyLogo: Express.Multer.File,
     @Req() req: any,
   ) {
     const userId = req.user.userId;
     return this.recruiterService.createProfile(
       userId,
       createCompanyProfileDto,
-      logo,
+      companyLogo,
     );
   }
 
@@ -62,6 +63,7 @@ export class RecruiterController {
     return this.recruiterService.getCompanyProfile(userId);
   }
 
+  //create job
   @Post('createJob/:companyId')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Create job posting' })
@@ -98,7 +100,7 @@ export class RecruiterController {
   })
   @ApiResponse({ status: 404, description: 'Applications not found' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
-  async getApplications(@Req() req: any, @Param() jobId: string) {
+  async getApplications(@Req() req: any, @Param('jobId') jobId: string) {
     return this.recruiterService.getApplications(jobId);
   }
 
@@ -110,7 +112,7 @@ export class RecruiterController {
   })
   @ApiResponse({ status: 404, description: 'Application not found' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
-  async applicantShortlisted(@Param() appId: string) {
+  async applicantShortlisted(@Param('appId') appId: string) {
     return this.recruiterService.applicantShortlisted(appId);
   }
 

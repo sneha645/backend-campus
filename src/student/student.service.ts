@@ -207,12 +207,13 @@ export class StudentService {
       where: { job: { job_id: jobId }, student: { user_id: userId } },
     });
 
-    if (!apply) {
+    if (apply) {
       throw new BadRequestException('Already applied');
     }
 
     const application = this.applicationRepo.create({
       job,
+      resumeUrl: resumne ? `/uploads/documents/${resumne.filename}` : undefined,
       student: { user_id: userId },
     });
 

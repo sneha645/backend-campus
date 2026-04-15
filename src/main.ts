@@ -5,9 +5,10 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as dotenv from 'dotenv';
 import * as express from 'express';
 import { join } from 'path';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   const configService = app.get(ConfigService);
   const port = configService.get<number>('PORT') || 3000;
@@ -24,6 +25,7 @@ async function bootstrap() {
   });
 
   app.use('/uploads', express.static(join(__dirname, '..', 'uploads')));
+  app.useStaticAssets(join(__dirname, '..', 'uploads'));
 
   const config = new DocumentBuilder()
     .setTitle('CampusConnect API')

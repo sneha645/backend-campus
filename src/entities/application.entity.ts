@@ -19,4 +19,7 @@ export class Application {
     default: 'applied',
   })
   status!: string;
+
+  @Column()
+  resumeUrl!: string;
 }

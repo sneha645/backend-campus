@@ -12,6 +12,12 @@ import {
 import { Application } from './application.entity';
 import { Company } from './company.entity';
 
+export enum JobStatus {
+  OPEN = 'open',
+  CLOSED = 'closed',
+  DRAFT = 'draft',
+}
+
 @Entity('job')
 export class Job {
   @PrimaryGeneratedColumn('uuid')
@@ -27,10 +33,6 @@ export class Job {
     example: 'We are looking for a talented Senior Full Stack Engineer...',
   })
   description!: string;
-
-  @Column()
-  @ApiProperty({ example: 'Remote' })
-  location!: string;
 
   @Column()
   @ApiProperty({ example: 'Full-time' })
@@ -61,9 +63,12 @@ export class Job {
   @ApiProperty({ example: ['Health insurance', '401(k)', 'Flexible hours'] })
   benefits!: string[];
 
-  @Column()
-  @ApiProperty({ example: 'open', enum: ['open', 'closed', 'draft'] })
-  status!: string;
+  @Column({
+    type: 'enum',
+    enum: JobStatus,
+    default: JobStatus.OPEN,
+  })
+  status!: JobStatus;
 
   @OneToMany(() => Application, (application) => application.job)
   applications!: Application[];

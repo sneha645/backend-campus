@@ -65,7 +65,6 @@ export class User {
   @ApiProperty({ example: 2 })
   experience?: number;
 
-
   @OneToMany(() => Project, (project) => project.student)
   studentProjects!: Project[];
 

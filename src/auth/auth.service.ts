@@ -203,7 +203,8 @@ export class AuthService {
         role: user.role,
       });
 
-      await this.userRepo.save(user);
+      const response = await this.userRepo.save(user);
+      console.log('response', response);
 
       const adminMail = this.configService.get<string>('ADMIN_EMAIL')!;
 

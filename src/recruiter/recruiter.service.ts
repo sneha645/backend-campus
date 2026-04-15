@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 
 import { InjectRepository } from '@nestjs/typeorm';
@@ -36,19 +40,29 @@ export class RecruiterService {
   async createProfile(
     userId: string,
     dto: CreateCompanyProfileDto,
-    logo: Express.Multer.File,
+    companyLogo: Express.Multer.File,
   ) {
-    const user = await this.userRepo.findOne({ where: { user_id: userId } });
+    const existingCompany = await this.companyRepo.findOne({
+      where: { user: { user_id: userId } },
+    });
+
+    if (existingCompany) {
+      throw new BadRequestException('You already created a company');
+    }
+
+    const user = await this.userRepo.findOne({
+      where: { user_id: userId },
+    });
+
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
-    const profile = this.companyRepo.create(dto);
-    profile.user = user;
-    profile.logoUrl = logo ? `/uploads/images/${logo.filename}` : '';
-
-    user.company = profile;
-    await this.userRepo.save(user);
+    const profile = this.companyRepo.create({
+      ...dto,
+      user: user,
+      logoUrl: companyLogo ? `/uploads/images/${companyLogo.filename}` : '',
+    });
 
     const savedProfile = await this.companyRepo.save(profile);
 
@@ -56,11 +70,6 @@ export class RecruiterService {
       message: 'Company profile created successfully',
       data: savedProfile,
     };
-
-    // return {
-    //   message: 'Company profile created successfully',
-    //   data: savedProfile,
-    // };
   }
 
   async getCompanyProfile(userId: string) {
