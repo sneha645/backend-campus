@@ -12,6 +12,7 @@ import { Project } from './project.entity';
 import { Company } from './company.entity';
 import { Internship } from './internship.entity';
 import { Application } from './application.entity';
+import { Assignment } from './assignment.entity';
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -80,14 +81,12 @@ export class User {
   @OneToOne(() => Company, (company) => company.user)
   company!: Company;
 
-  // @OneToMany(() => Job, (job) => job.user)
-  // jobs!: Job[];
 
   @OneToMany(() => Application, (application) => application.student)
   applications!: Application[];
 
-  // @OneToMany(() => Assignment, (assignment) => assignment.student)
-  // assignments!: Assignment[];
+  @OneToMany(() => Assignment, (assignment) => assignment.mentor)
+  assignments!: Assignment[];
 
   @Column({ default: false })
   @ApiProperty({ example: false })

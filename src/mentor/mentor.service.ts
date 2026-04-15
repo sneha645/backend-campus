@@ -6,6 +6,7 @@ import { User } from 'src/entities/user.entity';
 import { Internship, InternshipStatus } from 'src/entities/internship.entity';
 import { AssignmentDto } from 'src/dtos/assignment.dto';
 import { Assignment } from 'src/entities/assignment.entity';
+import { AssignmentSubmission } from 'src/entities/assignment_submission.entity';
 
 @Injectable()
 export class MentorService {
@@ -21,6 +22,9 @@ export class MentorService {
 
     @InjectRepository(Assignment)
     private readonly assignmentRepo: Repository<Assignment>,
+
+    @InjectRepository(AssignmentSubmission)
+    private readonly submissionRepo: Repository<AssignmentSubmission>,
   ) {}
 
   async getAllProjects(userId: string) {
@@ -85,8 +89,44 @@ export class MentorService {
     return this.internshipRepo.findOne({ where: { internship_id: id } });
   }
 
-  async createAssignment(assignmentDto: AssignmentDto) {
-    return this.assignmentRepo.save(assignmentDto);
+  async createAssignment(assignmentDto: AssignmentDto, userId: string) {
+    const mentor = await this.userRepo.findOne({ where: { user_id: userId } });
+    console.log(mentor);
+    if (!mentor) {
+      throw new NotFoundException('Mentor not found');
+    }
+    const assignment = this.assignmentRepo.create(assignmentDto);
+    return this.assignmentRepo.save({
+      ...assignment,
+      mentor: { user_id: userId },
+    });
+  }
+
+  async getSubmittedAssignments(id: string) {
+    return this.submissionRepo.find({
+      where: { assignment: { assignment_id: id } },
+      relations: ['student', 'assignment'],
+    });
+  }
+
+  async approveSubmittedAssignment(
+    id: string,
+    dto: { status: 'approved' | 'rejected'; feedback: string },
+  ) {
+    const submission = await this.submissionRepo.findOne({
+      where: { submission_id: id },
+    });
+    if (!submission) {
+      throw new NotFoundException('Submission not found');
+    }
+
+    if (dto.status === 'approved') {
+      submission.status = 'approved';
+    } else {
+      submission.status = 'rejected';
+    }
+    submission.feedback = dto.feedback;
+    return this.submissionRepo.save(submission);
   }
 
   // async getAllAssignments(userId: string) {
@@ -95,9 +135,9 @@ export class MentorService {
   //   });
   // }
 
-  async getSubmittedAssignments() {
-    return this.assignmentRepo.find({
-      where: { status: 'submitted' },
-    });
-  }
+  // async getSubmittedAssignments() {
+  //   return this.assignmentRepo.find({
+  //     where: { status: 'submitted' },
+  //   });
+  // }
 }

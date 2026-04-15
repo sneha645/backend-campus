@@ -16,6 +16,7 @@ import { Company } from './entities/company.entity';
 import { Job } from './entities/job.entity';
 import { Application } from './entities/application.entity';
 import { Assignment } from './entities/assignment.entity';
+import { AssignmentSubmission } from './entities/assignment_submission.entity';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { Assignment } from './entities/assignment.entity';
           Job,
           Application,
           Assignment,
+          AssignmentSubmission,
         ],
         synchronize: true,
       }),

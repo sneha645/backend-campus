@@ -15,6 +15,8 @@ import { UploadInternshipDto } from 'src/dtos/internship.dto';
 import { Internship } from 'src/entities/internship.entity';
 import { Job } from 'src/entities/job.entity';
 import { Application } from 'src/entities/application.entity';
+import { Assignment } from 'src/entities/assignment.entity';
+import { AssignmentSubmission } from 'src/entities/assignment_submission.entity';
 
 @Injectable()
 export class StudentService {
@@ -33,6 +35,12 @@ export class StudentService {
 
     @InjectRepository(Application)
     private readonly applicationRepo: Repository<Application>,
+
+    @InjectRepository(Assignment)
+    private readonly assignmentRepo: Repository<Assignment>,
+
+    @InjectRepository(AssignmentSubmission)
+    private readonly submissionRepo: Repository<AssignmentSubmission>,
   ) {}
 
   // upload project
@@ -230,16 +238,65 @@ export class StudentService {
     return this.applicationRepo.save(application);
   }
 
-  // async getAllAssignments(collageYear: string): Promise<any> {
-  //   try {
-  //     const assignments = await this.assignmentRepo.find({
-  //       where: { student: { year: collageYear } },
-  //     });
-  //     return assignments;
-  //   } catch (error) {
-  //     throw new InternalServerErrorException('Failed to get assignments');
-  //   }
-  // }
+  async getAllAssignments(userId: string): Promise<any> {
+    try {
+      const user = await this.userRepo.findOne({ where: { user_id: userId } });
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+      const assignments = await this.assignmentRepo.find({
+        where: { assignment_assignto: user.year },
+      });
+      return assignments;
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to get assignments');
+    }
+  }
+
+  async submitAssignment(
+    file: Express.Multer.File,
+    userId: string,
+    assignmentId: string,
+  ): Promise<any> {
+    try {
+      const user = await this.userRepo.findOne({ where: { user_id: userId } });
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+
+      const assignment = await this.assignmentRepo.findOne({
+        where: { assignment_id: assignmentId },
+      });
+      if (!assignment) {
+        throw new NotFoundException('Assignment not found');
+      }
+
+      if (assignment.assignment_assignto !== user.year) {
+        throw new BadRequestException(
+          'You are not assigned to this assignment',
+        );
+      }
+
+      const exxting = await this.submissionRepo.findOne({
+        where: {
+          assignment: { assignment_id: assignmentId },
+          student: { user_id: userId },
+        },
+      });
+      if (exxting) {
+        throw new BadRequestException('Already submitted');
+      }
+
+      const submission = this.submissionRepo.create({
+        fileUrl: file ? `/uploads/images/${file.filename}` : undefined,
+        student: { user_id: userId },
+        assignment: { assignment_id: assignmentId },
+      });
+      return this.submissionRepo.save(submission);
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to submit assignment');
+    }
+  }
 
   // async submitAssignment(
   //   file: Express.Multer.File,

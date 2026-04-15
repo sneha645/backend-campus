@@ -80,13 +80,38 @@ export class MentorController {
     return this.mentorService.getInternshipById(id);
   }
 
-  @Post('createAssignment')
+  @UseGuards(JwtAuthGuard)
+  @Post('assignment')
   @ApiOperation({ summary: 'Create assignment' })
   @ApiResponse({ status: 200, description: 'Assignment created successfully' })
   @ApiResponse({ status: 400, description: 'Invalid request' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
-  async createAssignment(@Body() assignmentDto: AssignmentDto): Promise<any> {
-    return this.mentorService.createAssignment(assignmentDto);
+  async createAssignment(
+    @Body() assignmentDto: AssignmentDto,
+    @Request() req: any,
+  ): Promise<any> {
+    return this.mentorService.createAssignment(assignmentDto, req.user.userId);
+  }
+
+  @Get('submitted-assignments/:id')
+  @ApiOperation({ summary: 'Get all submitted assignments' })
+  @ApiResponse({ status: 200, description: 'List of submitted assignments' })
+  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async getSubmittedAssignments(@Param('id') id: string): Promise<any> {
+    return this.mentorService.getSubmittedAssignments(id);
+  }
+
+  @Patch('submitted-assignments/:id')
+  @ApiOperation({ summary: 'Approve submitted assignment' })
+  @ApiResponse({ status: 200, description: 'Submitted assignment approved successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async approveSubmittedAssignment(
+    @Param('id') id: string,
+    @Body() dto: { status: 'approved' | 'rejected'; feedback: string },
+  ): Promise<any> {
+    return this.mentorService.approveSubmittedAssignment(id, dto);
   }
 
   // @UseGuards(JwtAuthGuard)
@@ -99,12 +124,12 @@ export class MentorController {
   //   return this.mentorService.getAllAssignments(req.user.userId);
   // }
 
-  @Get('submittedAssignments')
-  @ApiOperation({ summary: 'Get all submitted assignments' })
-  @ApiResponse({ status: 200, description: 'List of submitted assignments' })
-  @ApiResponse({ status: 400, description: 'Invalid request' })
-  @ApiResponse({ status: 500, description: 'Internal server error' })
-  async getSubmittedAssignments(): Promise<any> {
-    return this.mentorService.getSubmittedAssignments();
-  }
+  // @Get('submittedAssignments')
+  // @ApiOperation({ summary: 'Get all submitted assignments' })
+  // @ApiResponse({ status: 200, description: 'List of submitted assignments' })
+  // @ApiResponse({ status: 400, description: 'Invalid request' })
+  // @ApiResponse({ status: 500, description: 'Internal server error' })
+  // async getSubmittedAssignments(): Promise<any> {
+  //   return this.mentorService.getSubmittedAssignments();
+  // }
 }
