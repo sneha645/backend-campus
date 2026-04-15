@@ -9,6 +9,12 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 
+export enum InternshipStatus {
+  PENDING = 'pending',
+  APPROVED = 'approved',
+  REJECTED = 'rejected',
+}
+
 @Entity('internship')
 export class Internship {
   @PrimaryGeneratedColumn('uuid')
@@ -37,10 +43,10 @@ export class Internship {
 
   @Column({
     type: 'enum',
-    enum: ['pending', 'approved', 'rejected'],
-    default: 'pending',
+    enum: InternshipStatus,
+    default: InternshipStatus.PENDING,
   })
-  status!: 'pending' | 'approved' | 'rejected';
+  status!: InternshipStatus;
 
   @ManyToOne(() => User, (user) => user.studentInternship)
   student: User;

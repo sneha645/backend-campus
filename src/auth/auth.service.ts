@@ -87,14 +87,17 @@ export class AuthService {
   async createStudent(createStudentDto: CreateStudentDto): Promise<any> {
     try {
       const { name, email, password, role, year, branch } = createStudentDto;
+      console.log('createStudentDto', createStudentDto);
 
       const existingUser = await this.findByEmail(email);
+      console.log('existingUser', existingUser);
 
       if (existingUser) {
         throw new ConflictException('User already exists');
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
+      console.log('hashedPassword', hashedPassword);
 
       const user = this.userRepo.create({
         name,
@@ -104,18 +107,24 @@ export class AuthService {
         year,
         branch,
       });
+      console.log('user', user);
 
       const token = this.jwtService.sign({
         email: user.email,
         role: user.role,
       });
+      console.log('token', token);
 
       await this.userRepo.save(user);
+      console.log('user saved');
 
       const adminMail = this.configService.get<string>('ADMIN_EMAIL')!;
+      console.log('adminMail', adminMail);
 
       await this.mailService.sendVerificationEmail(user.email, token);
+      console.log('verification email sent');
       await this.mailService.sendStudentApprovalRequest(adminMail, user.email);
+      console.log('approval request sent');
 
       return {
         message: 'Student registered successfully, Please verify your email',
@@ -139,13 +148,16 @@ export class AuthService {
         specialization,
         experience,
       } = createMentorDto;
+      console.log('createMentorDto', createMentorDto);
 
       const existingUser = await this.findByEmail(email);
+      console.log('existingUser', existingUser);
       if (existingUser) {
         throw new ConflictException('User already exists');
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
+      console.log('hashedPassword', hashedPassword);
       const user = this.userRepo.create({
         name,
         email,
@@ -155,18 +167,24 @@ export class AuthService {
         specialization,
         experience,
       });
+      console.log('user', user);
 
       const token = this.jwtService.sign({
         email: user.email,
         role: user.role,
       });
+      console.log('token', token);
 
       await this.userRepo.save(user);
+      console.log('user saved');
 
       const adminMail = this.configService.get<string>('ADMIN_EMAIL')!;
+      console.log('adminMail', adminMail);
 
       await this.mailService.sendVerificationEmail(user.email, token);
+      console.log('verification email sent');
       await this.mailService.sendMentorApprovalRequest(adminMail, user.email);
+      console.log('approval request sent');
 
       return {
         message: 'Mentor registered successfully, Please verify your email',

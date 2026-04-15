@@ -9,7 +9,7 @@ import { UploadProjectDto } from 'src/dtos/project.dto';
 import { Repository } from 'typeorm';
 
 import { InjectRepository } from '@nestjs/typeorm';
-import { Project } from 'src/entities/project.entity';
+import { Project, ProjectStatus } from 'src/entities/project.entity';
 import { User, UserRole } from 'src/entities/user.entity';
 import { UploadInternshipDto } from 'src/dtos/internship.dto';
 import { Internship } from 'src/entities/internship.entity';
@@ -45,6 +45,7 @@ export class StudentService {
       const student = await this.userRepo.findOne({
         where: { user_id: studentId },
       });
+      console.log('student', student);
       if (!student) {
         throw new NotFoundException('Student not found');
       }
@@ -52,20 +53,25 @@ export class StudentService {
       const mentor = await this.userRepo.findOne({
         where: { user_id: uploadProjectDto.mentorId, role: UserRole.MENTOR },
       });
+      console.log('mentor', mentor);
       if (!mentor) {
         throw new NotFoundException('Mentor not found');
       }
 
       const project = this.projectRepo.create({
         ...uploadProjectDto,
-        student: student,
-        mentor: mentor,
+        student,
+        mentor,
+        status: ProjectStatus.PENDING,
         imageUrl: projectImage
           ? `/uploads/images/${projectImage.filename}`
           : undefined,
+        feedback: '',
       });
+      console.log('project', project);
 
       const response = await this.projectRepo.save(project);
+      console.log('response', response);
 
       return {
         message: 'Project uploaded successfully',
@@ -89,6 +95,7 @@ export class StudentService {
       const student = await this.userRepo.findOne({
         where: { user_id: studentId },
       });
+      console.log('student', student);
 
       if (!student) {
         throw new NotFoundException('Student not found');
@@ -97,6 +104,7 @@ export class StudentService {
       const mentor = await this.userRepo.findOne({
         where: { user_id: uploadInternshipDto.mentorId, role: UserRole.MENTOR },
       });
+      console.log('mentor', mentor);
 
       if (!mentor) {
         throw new NotFoundException('Mentor not found');
@@ -110,8 +118,10 @@ export class StudentService {
           ? `/uploads/images/${certificateImage.filename}`
           : undefined,
       });
+      console.log('internship', internship);
 
       const response = await this.internshipRepo.save(internship);
+      console.log('response', response);
 
       return {
         message: 'Internship uploaded successfully',

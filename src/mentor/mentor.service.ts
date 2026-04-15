@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Project } from 'src/entities/project.entity';
+import { Project, ProjectStatus } from 'src/entities/project.entity';
 import { User } from 'src/entities/user.entity';
-import { Internship } from 'src/entities/internship.entity';
+import { Internship, InternshipStatus } from 'src/entities/internship.entity';
 import { AssignmentDto } from 'src/dtos/assignment.dto';
 import { Assignment } from 'src/entities/assignment.entity';
 
@@ -34,14 +34,24 @@ export class MentorService {
     id: string,
     dto: { status: 'approved' | 'rejected'; feedback: string },
   ) {
-    return this.internshipRepo.update(id, {
-      status: dto.status,
-      feedback: dto.feedback,
+    const project = await this.projectRepo.findOne({
+      where: { project_id: id },
     });
+    if (!project) {
+      throw new NotFoundException('Project not found');
+    }
+
+    if (dto.status === 'approved') {
+      project.status = ProjectStatus.APPROVED;
+    } else {
+      project.status = ProjectStatus.REJECTED;
+    }
+    project.feedback = dto.feedback;
+    return this.projectRepo.save(project);
   }
 
   async getAllInternships(userId: string) {
-    return this.projectRepo.find({
+    return this.internshipRepo.find({
       where: { mentor: { user_id: userId } },
       relations: ['student'],
     });
@@ -51,10 +61,20 @@ export class MentorService {
     id: string,
     dto: { status: 'approved' | 'rejected'; feedback: string },
   ) {
-    return this.internshipRepo.update(id, {
-      status: dto.status,
-      feedback: dto.feedback,
+    const internship = await this.internshipRepo.findOne({
+      where: { internship_id: id },
     });
+    if (!internship) {
+      throw new NotFoundException('Internship not found');
+    }
+
+    if (dto.status === 'approved') {
+      internship.status = InternshipStatus.APPROVED;
+    } else {
+      internship.status = InternshipStatus.REJECTED;
+    }
+    internship.feedback = dto.feedback;
+    return this.internshipRepo.save(internship);
   }
 
   async getProjectById(id: string) {
