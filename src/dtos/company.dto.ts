@@ -3,27 +3,27 @@ import { IsNotEmpty, IsOptional, IsString, IsUrl } from 'class-validator';
 export class CreateCompanyProfileDto {
   @IsNotEmpty()
   @IsString()
-  companyName: string;
+  companyName!: string;
 
   @IsOptional()
   @IsUrl()
-  website?: string;
+  website!: string;
 
   @IsOptional()
   @IsString()
-  industry?: string;
+  industry!: string;
 
   @IsOptional()
   @IsString()
-  companySize?: string;
+  companySize!: string;
 
   @IsOptional()
   @IsString()
-  aboutCompany?: string;
+  aboutCompany!: string;
 
   @IsOptional()
   @IsString()
-  location?: string;
+  location!: string;
 
   @IsOptional()
   @IsString()

@@ -2,7 +2,6 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  Unique,
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
@@ -11,10 +10,15 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { Project } from './project.entity';
 import { Company } from './company.entity';
-import { Job } from './job.entity';
-import { Application } from './application.entity';
-import { Assignment } from './assignment.entity';
 import { Internship } from './internship.entity';
+import { Application } from './application.entity';
+
+export enum UserRole {
+  ADMIN = 'admin',
+  RECRUITER = 'recruiter',
+  STUDENT = 'student',
+  MENTOR = 'mentor',
+}
 
 @Entity('user')
 export class User {
@@ -36,10 +40,9 @@ export class User {
 
   @Column({
     type: 'enum',
-    enum: ['admin', 'recruiter', 'student', 'mentor'],
-    default: 'student',
+    enum: UserRole.STUDENT,
   })
-  role!: 'admin' | 'recruiter' | 'student' | 'mentor';
+  role!: UserRole;
 
   @Column({ nullable: true })
   @ApiProperty({ example: '1st Year' })
@@ -61,14 +64,14 @@ export class User {
   @OneToMany(() => Internship, (internship) => internship.mentor)
   mentorInternship: Internship[];
 
-  // @OneToOne(() => Company, (company) => company.user)
-  // company!: Company;
+  @OneToOne(() => Company, (company) => company.user)
+  company!: Company;
 
   // @OneToMany(() => Job, (job) => job.user)
   // jobs!: Job[];
 
-  // @OneToMany(() => Application, (application) => application.student)
-  // applications!: Application[];
+  @OneToMany(() => Application, (application) => application.student)
+  applications!: Application[];
 
   // @OneToMany(() => Assignment, (assignment) => assignment.student)
   // assignments!: Assignment[];

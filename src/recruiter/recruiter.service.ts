@@ -4,8 +4,6 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Project } from 'src/entities/project.entity';
 import { User } from 'src/entities/user.entity';
-import { UploadInternshipDto } from 'src/dtos/internship.dto';
-import { Internship } from 'src/entities/internship.entity';
 import { CreateCompanyProfileDto } from 'src/dtos/company.dto';
 import { Company } from 'src/entities/company.entity';
 import { JobDto } from 'src/dtos/job.dto';
@@ -20,9 +18,6 @@ export class RecruiterService {
 
     @InjectRepository(Company)
     private readonly companyRepo: Repository<Company>,
-
-    @InjectRepository(Internship)
-    private readonly internshipRepo: Repository<Internship>,
 
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
@@ -44,22 +39,18 @@ export class RecruiterService {
     logo: Express.Multer.File,
   ) {
     const user = await this.userRepo.findOne({ where: { user_id: userId } });
-    console.log('user', user);
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
     const profile = this.companyRepo.create(dto);
-    console.log('profile', profile);
-    // profile.user = user;
+    profile.user = user;
     profile.logoUrl = logo ? `/uploads/images/${logo.filename}` : '';
 
-    // user.company = profile;
-    console.log('user', user);
+    user.company = profile;
     await this.userRepo.save(user);
 
     const savedProfile = await this.companyRepo.save(profile);
-    delete (savedProfile as any).user;
 
     return {
       message: 'Company profile created successfully',
@@ -84,19 +75,21 @@ export class RecruiterService {
     // return user.company;
   }
 
-  async createJob(userId: string, dto: JobDto) {
-    const user = await this.userRepo.findOne({ where: { user_id: userId } });
-    if (!user) {
+  async createJob(companyId: string, dto: JobDto) {
+    const company = await this.companyRepo.findOne({
+      where: { company_id: companyId },
+    });
+    if (!company) {
       throw new NotFoundException('User not found');
     }
 
-    // const job = this.jobRepo.create(dto);
-    // job.user = user;
-    // await this.jobRepo.save(job);
-    // return {
-    //   message: 'Job created successfully',
-    //   data: job,
-    // };
+    const job = this.jobRepo.create(dto);
+    job.company = company;
+    await this.jobRepo.save(job);
+    return {
+      message: 'Job created successfully',
+      data: job,
+    };
   }
 
   async getMyJobs(userId: string) {
@@ -117,14 +110,29 @@ export class RecruiterService {
     });
   }
 
-  async updateApplicationStatus(applicationId: string, status: string) {
+  async applicantShortlisted(appId: string) {
     const application = await this.applicationRepo.findOne({
-      where: { application_id: applicationId },
+      where: { application_id: appId },
     });
     if (!application) {
       throw new NotFoundException('Application not found');
     }
-    application.status = status;
+    application.status = 'shortlisted';
+    await this.applicationRepo.save(application);
+    return {
+      message: 'Application status updated successfully',
+      data: application,
+    };
+  }
+
+  async applicantRejected(appId: string) {
+    const application = await this.applicationRepo.findOne({
+      where: { application_id: appId },
+    });
+    if (!application) {
+      throw new NotFoundException('Application not found');
+    }
+    application.status = 'rejected';
     await this.applicationRepo.save(application);
     return {
       message: 'Application status updated successfully',

@@ -187,14 +187,40 @@ export class StudentService {
   //   }
   // }
 
-  // async getJobs(): Promise<any> {
-  //   try {
-  //     const jobs = await this.jobRepo.find();
-  //     return jobs;
-  //   } catch (error) {
-  //     throw new InternalServerErrorException('Failed to get jobs');
-  //   }
-  // }
+  //job features
+  async getJobs(): Promise<any> {
+    try {
+      const jobs = await this.jobRepo.find();
+      return jobs;
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to get jobs');
+    }
+  }
+
+  async applyJob(jobId: string, resumne: Express.Multer.File, userId: string) {
+    const user = await this.userRepo.findOne({ where: { user_id: userId } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const job = await this.jobRepo.findOne({ where: { job_id: jobId } });
+    if (!job) throw new NotFoundException('Job not found');
+
+    const apply = await this.applicationRepo.findOne({
+      where: { job: { job_id: jobId }, student: { user_id: userId } },
+    });
+
+    if (!apply) {
+      throw new BadRequestException('Already applied');
+    }
+
+    const application = this.applicationRepo.create({
+      job,
+      student: { user_id: userId },
+    });
+
+    return this.applicationRepo.save(application);
+  }
 
   // async getAllAssignments(collageYear: string): Promise<any> {
   //   try {
@@ -240,27 +266,6 @@ export class StudentService {
   //   } catch (error) {
   //     throw new InternalServerErrorException('Failed to get students');
   //   }
-  // }
-
-  // async applyJob(jobId: string, studentId: string) {
-  //   const job = await this.jobRepo.findOne({ where: { job_id: jobId } });
-
-  //   if (!job) throw new NotFoundException('Job not found');
-
-  //   const existing = await this.applicationRepo.findOne({
-  //     where: { job: { job_id: jobId }, student: { user_id: studentId } },
-  //   });
-
-  //   if (existing) {
-  //     throw new BadRequestException('Already applied');
-  //   }
-
-  //   const application = this.applicationRepo.create({
-  //     job,
-  //     student: { user_id: studentId },
-  //   });
-
-  //   return this.applicationRepo.save(application);
   // }
 
   // async getMyApplications(studentId: string): Promise<any> {

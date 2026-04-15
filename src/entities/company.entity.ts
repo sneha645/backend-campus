@@ -3,7 +3,6 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  Unique,
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
@@ -11,6 +10,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { User } from './user.entity';
+import { Job } from './job.entity';
 
 @Entity('company')
 export class Company {
@@ -50,9 +50,12 @@ export class Company {
   @ApiProperty({ example: 'https://google.com' })
   location!: string;
 
-  // @OneToOne(() => User, (user) => user.company)
-  // @JoinColumn({ name: 'user_id' })
-  // user!: User;
+  @OneToOne(() => User, (user) => user.company)
+  @JoinColumn({ name: 'user_id' })
+  user!: User;
+
+  @OneToMany(() => Job, (job) => job.company)
+  jobs!: Job[];
 
   @CreateDateColumn()
   createdAt!: Date;

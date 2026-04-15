@@ -4,26 +4,26 @@ import { IsEmail, IsString, MinLength } from 'class-validator';
 export class CreateStudentDto {
   @ApiProperty({ example: 'John Doe' })
   @IsString()
-  name: string;
+  name!: string;
 
   @ApiProperty({ example: 'johndoe@gmail.com' })
   @IsEmail()
-  email: string;
+  email!: string;
 
   @ApiProperty({ example: 'password123' })
   @IsString()
   @MinLength(6)
-  password: string;
+  password!: string;
 
   @ApiProperty({ example: 'student' })
   @IsString()
-  role: string;
+  role!: string;
 
   @ApiProperty({ example: '1st Year' })
   @IsString()
-  year: string;
+  year!: string;
 
   @ApiProperty({ example: 'Computer Science' })
   @IsString()
-  branch: string;
+  branch!: string;
 }

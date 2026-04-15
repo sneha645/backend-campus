@@ -31,7 +31,6 @@ export class AuthController {
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async registerStudent(
     @Body() createStudentDto: CreateStudentDto,
-    @Request() req: any,
   ): Promise<any> {
     return this.authService.createStudent(createStudentDto);
   }

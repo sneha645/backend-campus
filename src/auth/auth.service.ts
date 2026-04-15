@@ -35,10 +35,7 @@ export class AuthService {
     });
   }
 
-  async create(data: any) {
-    return this.userRepo.save(data);
-  }
-
+  // create student
   async createStudent(createStudentDto: CreateStudentDto): Promise<any> {
     try {
       const { name, email, password, role, year, branch } = createStudentDto;
@@ -51,7 +48,7 @@ export class AuthService {
 
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      const user = await this.create({
+      const user = this.userRepo.create({
         name,
         email,
         password: hashedPassword,

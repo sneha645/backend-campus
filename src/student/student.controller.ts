@@ -82,6 +82,32 @@ export class StudentController {
     return this.studentService.getMyInternships(req.user.userId);
   }
 
+  //job features
+  @UseGuards(JwtAuthGuard)
+  @Get('jobs')
+  @ApiOperation({ summary: 'Get all jobs' })
+  @ApiResponse({ status: 201, description: 'Jobs fetched successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async getJobs(): Promise<any> {
+    return this.studentService.getJobs();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('apply/:jobId')
+  @UseInterceptors(FileInterceptor('resume', multerConfig))
+  @ApiOperation({ summary: 'Apply for a job' })
+  @ApiResponse({ status: 201, description: 'Job applied successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async applyForJob(
+    @Param('jobId') jobId: string,
+    @UploadedFile() resume: Express.Multer.File,
+    @Request() req: any,
+  ): Promise<any> {
+    return this.studentService.applyJob(jobId, resume, req.user.userId);
+  }
+
   // @UseGuards(JwtAuthGuard)
   // @Get('getProfile')
   // @ApiOperation({ summary: 'Get profile' })
@@ -103,16 +129,6 @@ export class StudentController {
   //   @Request() req: any,
   // ): Promise<any> {
   //   return this.studentService.updateProfile(updateProfileDto, req.user.userId);
-  // }
-
-  // @UseGuards(JwtAuthGuard)
-  // @Get('jobs')
-  // @ApiOperation({ summary: 'Get all jobs' })
-  // @ApiResponse({ status: 201, description: 'Jobs fetched successfully' })
-  // @ApiResponse({ status: 400, description: 'Invalid request' })
-  // @ApiResponse({ status: 500, description: 'Internal server error' })
-  // async getJobs(): Promise<any> {
-  //   return this.studentService.getJobs();
   // }
 
   // @UseGuards(JwtAuthGuard)
@@ -161,19 +177,6 @@ export class StudentController {
   // @ApiResponse({ status: 500, description: 'Internal server error' })
   // async getAllJobs(): Promise<any> {
   //   return this.studentService.getAllJobs();
-  // }
-
-  // @UseGuards(JwtAuthGuard)
-  // @Post('apply/:jobId')
-  // @ApiOperation({ summary: 'Apply for a job' })
-  // @ApiResponse({ status: 201, description: 'Job applied successfully' })
-  // @ApiResponse({ status: 400, description: 'Invalid request' })
-  // @ApiResponse({ status: 500, description: 'Internal server error' })
-  // async applyForJob(
-  //   @Param('jobId') jobId: string,
-  //   @Request() req: any,
-  // ): Promise<any> {
-  //   return this.studentService.applyJob(jobId, req.user.userId);
   // }
 
   // @UseGuards(JwtAuthGuard)

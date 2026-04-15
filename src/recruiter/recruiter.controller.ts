@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Req,
   UploadedFile,
@@ -61,15 +62,18 @@ export class RecruiterController {
     return this.recruiterService.getCompanyProfile(userId);
   }
 
-  @Post('createJob')
+  @Post('createJob/:companyId')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Create job posting' })
   @ApiResponse({ status: 201, description: 'Job created successfully' })
   @ApiResponse({ status: 400, description: 'Invalid request' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
-  async createJob(@Body() jobDto: JobDto, @Req() req: any) {
-    const userId = req.user.userId;
-    return this.recruiterService.createJob(userId, jobDto);
+  async createJob(
+    @Body() jobDto: JobDto,
+    @Param('companyId') companyId: string,
+    @Req() req: any,
+  ) {
+    return this.recruiterService.createJob(companyId, jobDto);
   }
 
   @Get('getMyJobs')
@@ -86,7 +90,7 @@ export class RecruiterController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('getApplications')
+  @Get('getMyApplications/:jobId')
   @ApiOperation({ summary: 'Get all applications' })
   @ApiResponse({
     status: 200,
@@ -94,18 +98,31 @@ export class RecruiterController {
   })
   @ApiResponse({ status: 404, description: 'Applications not found' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
-  async getApplications(@Req() req: any) {
-    const userId = req.user.userId;
-    return this.recruiterService.getApplications(userId);
+  async getApplications(@Req() req: any, @Param() jobId: string) {
+    return this.recruiterService.getApplications(jobId);
   }
 
-  @Post('updateApplicationStatus')
+  @Post('applicanttShortlisted/:appId')
   @ApiOperation({ summary: 'Update application status' })
-  @ApiResponse({ status: 200, description: 'Application status updated successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Application status updated successfully',
+  })
   @ApiResponse({ status: 404, description: 'Application not found' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
-  async updateApplicationStatus(@Body() body: any) {
-    const { applicationId, status } = body;
-    return this.recruiterService.updateApplicationStatus(applicationId, status);
+  async applicantShortlisted(@Param() appId: string) {
+    return this.recruiterService.applicantShortlisted(appId);
+  }
+
+  @Post('applicantRejected/:appId')
+  @ApiOperation({ summary: 'Update application status' })
+  @ApiResponse({
+    status: 200,
+    description: 'Application status updated successfully',
+  })
+  @ApiResponse({ status: 404, description: 'Application not found' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async applicantRejected(@Param() appId: string) {
+    return this.recruiterService.applicantRejected(appId);
   }
 }

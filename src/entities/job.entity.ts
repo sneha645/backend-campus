@@ -8,8 +8,9 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { User } from './user.entity';
+
 import { Application } from './application.entity';
+import { Company } from './company.entity';
 
 @Entity('job')
 export class Job {
@@ -64,11 +65,11 @@ export class Job {
   @ApiProperty({ example: 'open', enum: ['open', 'closed', 'draft'] })
   status!: string;
 
-  // @ManyToOne(() => User, (user) => user.jobs)
-  // user!: User;
-
   @OneToMany(() => Application, (application) => application.job)
   applications!: Application[];
+
+  @ManyToOne(() => Company, (company) => company.jobs, { eager: true })
+  company!: Company;
 
   @CreateDateColumn()
   createdAt!: Date;

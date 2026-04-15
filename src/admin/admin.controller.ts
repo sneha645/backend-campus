@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post } from '@nestjs/common';
+import { Controller, Param, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AdminService } from './admin.service';
 
@@ -6,15 +6,6 @@ import { AdminService } from './admin.service';
 @Controller('admin')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
-
-  @Get('pending')
-  @ApiOperation({ summary: 'Get all pending recruiters' })
-  @ApiResponse({ status: 200, description: 'List of pending recruiters' })
-  @ApiResponse({ status: 400, description: 'Invalid request' })
-  @ApiResponse({ status: 500, description: 'Internal server error' })
-  async getPendingRecruiters(): Promise<any> {
-    return this.adminService.getPendingRecruiters();
-  }
 
   @Post('approve/:id')
   @ApiOperation({ summary: 'Approve recruiter' })
