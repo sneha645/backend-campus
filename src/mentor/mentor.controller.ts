@@ -49,7 +49,7 @@ export class MentorController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Patch('approveProject/:id')
+  @Post('approveProject/:id')
   @ApiOperation({ summary: 'Approve project' })
   @ApiResponse({ status: 200, description: 'Project approved successfully' })
   @ApiResponse({ status: 400, description: 'Invalid request' })
@@ -61,7 +61,8 @@ export class MentorController {
     return this.mentorService.approveProject(id, dto);
   }
 
-  @Patch('rejectProject/:id')
+  @UseGuards(JwtAuthGuard)
+  @Post('rejectProject/:id')
   @ApiOperation({ summary: 'Reject project' })
   @ApiResponse({ status: 200, description: 'Project rejected successfully' })
   @ApiResponse({ status: 400, description: 'Invalid request' })
@@ -73,6 +74,7 @@ export class MentorController {
     return this.mentorService.rejectProject(id, dto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('approveInternship/:id')
   @ApiOperation({ summary: 'Approve internship' })
   @ApiResponse({ status: 200, description: 'Internship approved successfully' })
@@ -85,7 +87,8 @@ export class MentorController {
     return this.mentorService.approveInternship(id, dto);
   }
 
-  @Patch('rejectInternship/:id')
+  @UseGuards(JwtAuthGuard)
+  @Post('rejectInternship/:id')
   @ApiOperation({ summary: 'Reject project' })
   @ApiResponse({ status: 200, description: 'Project rejected successfully' })
   @ApiResponse({ status: 400, description: 'Invalid request' })

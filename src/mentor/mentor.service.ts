@@ -38,6 +38,7 @@ export class MentorService {
     id: string,
     dto: { status: 'approved'; feedback: string },
   ) {
+    console.log(dto);
     const project = await this.projectRepo.findOne({
       where: { project_id: id },
     });
