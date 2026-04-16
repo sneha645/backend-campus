@@ -65,8 +65,8 @@ export class RecruiterController {
   }
 
   //create job
-  @Post('createJob/:companyId')
   @UseGuards(JwtAuthGuard)
+  @Post('createJob/:companyId')
   @ApiOperation({ summary: 'Create job posting' })
   @ApiResponse({ status: 201, description: 'Job created successfully' })
   @ApiResponse({ status: 400, description: 'Invalid request' })
@@ -79,6 +79,7 @@ export class RecruiterController {
     return this.recruiterService.createJob(companyId, jobDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('getMyJobs')
   @ApiOperation({ summary: 'Get my jobs' })
   @ApiResponse({
@@ -105,6 +106,7 @@ export class RecruiterController {
     return this.recruiterService.getApplications(jobId);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('applicanttShortlisted/:appId')
   @ApiOperation({ summary: 'Update application status' })
   @ApiResponse({
@@ -113,10 +115,11 @@ export class RecruiterController {
   })
   @ApiResponse({ status: 404, description: 'Application not found' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
-  async applicantShortlisted(@Param('appId') appId: string) {
+  async applicantShortlisted(@Param('appId') appId: string, @Req() req: any) {
     return this.recruiterService.applicantShortlisted(appId);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('applicantRejected/:appId')
   @ApiOperation({ summary: 'Update application status' })
   @ApiResponse({
@@ -125,7 +128,7 @@ export class RecruiterController {
   })
   @ApiResponse({ status: 404, description: 'Application not found' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
-  async applicantRejected(@Param() appId: string) {
+  async applicantRejected(@Param() appId: string, @Req() req: any) {
     return this.recruiterService.applicantRejected(appId);
   }
 }

@@ -102,14 +102,14 @@ export class RecruiterService {
   }
 
   async getMyJobs(userId: string) {
-    const user = await this.userRepo.findOne({
-      where: { user_id: userId },
+    const company = await this.companyRepo.findOne({
+      where: { user: { user_id: userId } },
       relations: ['jobs'],
     });
-    // if (!user || !user.jobs) {
-    //   throw new NotFoundException('Job postings not found');
-    // }
-    // return user.jobs;
+    if (!company || !company.jobs) {
+      throw new NotFoundException('Job postings not found');
+    }
+    return company.jobs;
   }
 
   async getApplications(jobId: string) {
@@ -127,10 +127,10 @@ export class RecruiterService {
       throw new NotFoundException('Application not found');
     }
     application.status = 'shortlisted';
-    await this.applicationRepo.save(application);
+    const updatedApplication = await this.applicationRepo.save(application);
     return {
       message: 'Application status updated successfully',
-      data: application,
+      data: updatedApplication,
     };
   }
 
