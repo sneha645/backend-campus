@@ -48,6 +48,7 @@ export class MentorController {
     return this.mentorService.getAssignedProjects(req.user.userId);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch('approveProject/:id')
   @ApiOperation({ summary: 'Approve project' })
   @ApiResponse({ status: 200, description: 'Project approved successfully' })

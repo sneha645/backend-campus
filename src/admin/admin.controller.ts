@@ -1,27 +1,66 @@
-import { Controller, Param, Post } from '@nestjs/common';
+import { Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AdminService } from './admin.service';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @ApiTags('Admin')
 @Controller('admin')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
-  @Post('approve/:id')
-  @ApiOperation({ summary: 'Approve recruiter' })
-  @ApiResponse({ status: 200, description: 'Recruiter approved successfully' })
+  @UseGuards(JwtAuthGuard)
+  @Get('all-students')
+  @ApiOperation({ summary: 'Get all students' })
+  @ApiResponse({
+    status: 200,
+    description: 'All students fetched successfully',
+  })
   @ApiResponse({ status: 400, description: 'Invalid request' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
-  async approveRecruiter(@Param('id') id: string): Promise<any> {
+  async getAllStudents(@Req() req: any): Promise<any> {
+    return this.adminService.getAllStudents();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('all-mentors')
+  @ApiOperation({ summary: 'Get all mentors' })
+  @ApiResponse({ status: 200, description: 'All mentors fetched successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async getAllMentors(@Req() req: any): Promise<any> {
+    return this.adminService.getAllMentors();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('all-recruiters')
+  @ApiOperation({ summary: 'Get all recruiters' })
+  @ApiResponse({
+    status: 200,
+    description: 'All recruiters fetched successfully',
+  })
+  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async getAllRecruiters(@Req() req: any): Promise<any> {
+    return this.adminService.getAllRecruiters();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('approve/:id')
+  @ApiOperation({ summary: 'Approve user' })
+  @ApiResponse({ status: 200, description: 'User approved successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async approveUser(@Param('id') id: string, @Req() req: any): Promise<any> {
     return this.adminService.approve(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('reject/:id')
-  @ApiOperation({ summary: 'Reject recruiter' })
-  @ApiResponse({ status: 200, description: 'Recruiter reject successfully' })
+  @ApiOperation({ summary: 'Reject user' })
+  @ApiResponse({ status: 200, description: 'User reject successfully' })
   @ApiResponse({ status: 400, description: 'Invalid request' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
-  async rejectRecruiter(@Param('id') id: string): Promise<any> {
+  async rejectUser(@Param('id') id: string, @Req() req: any): Promise<any> {
     return this.adminService.reject(id);
   }
 }
