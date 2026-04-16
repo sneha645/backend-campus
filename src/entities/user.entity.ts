@@ -81,7 +81,6 @@ export class User {
   @OneToOne(() => Company, (company) => company.user)
   company!: Company;
 
-
   @OneToMany(() => Application, (application) => application.student)
   applications!: Application[];
 

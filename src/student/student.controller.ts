@@ -209,4 +209,14 @@ export class StudentController {
   // async getMyApplications(@Request() req: any): Promise<any> {
   //   return this.studentService.getMyApplications(req.user.userId);
   // }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('mentors')
+  @ApiOperation({ summary: 'Get all mentors' })
+  @ApiResponse({ status: 200, description: 'List of mentors' })
+  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async getAllMentors(): Promise<any> {
+    return this.studentService.getAllMentors();
+  }
 }

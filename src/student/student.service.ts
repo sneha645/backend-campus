@@ -356,4 +356,17 @@ export class StudentService {
   //     throw new InternalServerErrorException('Failed to get jobs');
   //   }
   // }
+
+  async getAllMentors(): Promise<any> {
+    try {
+      console.log('working');
+      const mentors = await this.userRepo.find({
+        where: { role: UserRole.MENTOR },
+      });
+      console.log('mentors', mentors);
+      return mentors;
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to get mentors');
+    }
+  }
 }

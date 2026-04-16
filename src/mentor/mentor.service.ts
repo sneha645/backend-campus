@@ -36,7 +36,7 @@ export class MentorService {
 
   async approveProject(
     id: string,
-    dto: { status: 'approved' | 'rejected'; feedback: string },
+    dto: { status: 'approved'; feedback: string },
   ) {
     const project = await this.projectRepo.findOne({
       where: { project_id: id },
@@ -45,11 +45,23 @@ export class MentorService {
       throw new NotFoundException('Project not found');
     }
 
-    if (dto.status === 'approved') {
-      project.status = ProjectStatus.APPROVED;
-    } else {
-      project.status = ProjectStatus.REJECTED;
+    project.status = ProjectStatus.APPROVED;
+    project.feedback = dto.feedback;
+    return this.projectRepo.save(project);
+  }
+
+  async rejectProject(
+    id: string,
+    dto: { status: 'rejected'; feedback: string },
+  ) {
+    const project = await this.projectRepo.findOne({
+      where: { project_id: id },
+    });
+    if (!project) {
+      throw new NotFoundException('Project not found');
     }
+
+    project.status = ProjectStatus.REJECTED;
     project.feedback = dto.feedback;
     return this.projectRepo.save(project);
   }
@@ -63,7 +75,7 @@ export class MentorService {
 
   async approveInternship(
     id: string,
-    dto: { status: 'approved' | 'rejected'; feedback: string },
+    dto: { status: 'approved'; feedback: string },
   ) {
     const internship = await this.internshipRepo.findOne({
       where: { internship_id: id },
@@ -72,13 +84,27 @@ export class MentorService {
       throw new NotFoundException('Internship not found');
     }
 
-    if (dto.status === 'approved') {
-      internship.status = InternshipStatus.APPROVED;
-    } else {
-      internship.status = InternshipStatus.REJECTED;
-    }
+    internship.status = InternshipStatus.APPROVED;
     internship.feedback = dto.feedback;
     return this.internshipRepo.save(internship);
+  }
+
+  async rejectInternship(
+    id: string,
+    dto: { status: 'rejected'; feedback: string },
+  ) {
+    const project = await this.projectRepo.findOne({
+      where: { project_id: id },
+    });
+    if (!project) {
+      throw new NotFoundException('Project not found');
+    }
+
+    if (dto.status === 'rejected') {
+      project.status = ProjectStatus.REJECTED;
+    }
+    project.feedback = dto.feedback;
+    return this.projectRepo.save(project);
   }
 
   async getProjectById(id: string) {
@@ -140,4 +166,11 @@ export class MentorService {
   //     where: { status: 'submitted' },
   //   });
   // }
+
+  async getAssignedProjects(userId: string) {
+    return this.projectRepo.find({
+      where: { mentor: { user_id: userId } },
+      relations: ['student'],
+    });
+  }
 }

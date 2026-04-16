@@ -28,18 +28,6 @@ export class MentorController {
     return this.mentorService.getAllProjects(req.user.userId);
   }
 
-  @Patch('approveProject/:id')
-  @ApiOperation({ summary: 'Approve project' })
-  @ApiResponse({ status: 200, description: 'Project approved successfully' })
-  @ApiResponse({ status: 400, description: 'Invalid request' })
-  @ApiResponse({ status: 500, description: 'Internal server error' })
-  async approveProject(
-    @Param('id') id: string,
-    @Body() dto: { status: 'approved' | 'rejected'; feedback: string },
-  ): Promise<any> {
-    return this.mentorService.approveProject(id, dto);
-  }
-
   @UseGuards(JwtAuthGuard)
   @Get('internships')
   @ApiOperation({ summary: 'Get all internships' })
@@ -50,6 +38,40 @@ export class MentorController {
     return this.mentorService.getAllInternships(req.user.userId);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('assigned-projects')
+  @ApiOperation({ summary: 'Get assigned projects' })
+  @ApiResponse({ status: 200, description: 'List of assigned projects' })
+  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async getAssignedProjects(@Request() req: any): Promise<any> {
+    return this.mentorService.getAssignedProjects(req.user.userId);
+  }
+
+  @Patch('approveProject/:id')
+  @ApiOperation({ summary: 'Approve project' })
+  @ApiResponse({ status: 200, description: 'Project approved successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async approveProject(
+    @Param('id') id: string,
+    @Body() dto: { status: 'approved'; feedback: string },
+  ): Promise<any> {
+    return this.mentorService.approveProject(id, dto);
+  }
+
+  @Patch('rejectProject/:id')
+  @ApiOperation({ summary: 'Reject project' })
+  @ApiResponse({ status: 200, description: 'Project rejected successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async rejectProject(
+    @Param('id') id: string,
+    @Body() dto: { status: 'rejected'; feedback: string },
+  ): Promise<any> {
+    return this.mentorService.rejectProject(id, dto);
+  }
+
   @Post('approveInternship/:id')
   @ApiOperation({ summary: 'Approve internship' })
   @ApiResponse({ status: 200, description: 'Internship approved successfully' })
@@ -57,9 +79,21 @@ export class MentorController {
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async approveInternship(
     @Param('id') id: string,
-    @Body() dto: { status: 'approved' | 'rejected'; feedback: string },
+    @Body() dto: { status: 'approved'; feedback: string },
   ): Promise<any> {
     return this.mentorService.approveInternship(id, dto);
+  }
+
+  @Patch('rejectInternship/:id')
+  @ApiOperation({ summary: 'Reject project' })
+  @ApiResponse({ status: 200, description: 'Project rejected successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async rejectInternship(
+    @Param('id') id: string,
+    @Body() dto: { status: 'rejected'; feedback: string },
+  ): Promise<any> {
+    return this.mentorService.rejectProject(id, dto);
   }
 
   @Get('projects/:id')
@@ -104,7 +138,10 @@ export class MentorController {
 
   @Patch('submitted-assignments/:id')
   @ApiOperation({ summary: 'Approve submitted assignment' })
-  @ApiResponse({ status: 200, description: 'Submitted assignment approved successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Submitted assignment approved successfully',
+  })
   @ApiResponse({ status: 400, description: 'Invalid request' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async approveSubmittedAssignment(

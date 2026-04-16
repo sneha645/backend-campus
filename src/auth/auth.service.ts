@@ -327,11 +327,14 @@ export class AuthService {
     try {
       const user = await this.userRepo.findOne({
         where: { user_id: userId },
-        relations: ['company', 'studentProjects', 'mentorProjects', 'jobs'],
+        // relations: ['company', 'studentProjects', 'mentorProjects', 'jobs'],
       });
+
+      console.log('user', user);
 
       return user;
     } catch (error) {
+      console.log('error', error);
       throw new InternalServerErrorException('Failed to fetch user');
     }
   }
