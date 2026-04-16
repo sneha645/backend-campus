@@ -67,11 +67,6 @@ export class AuthService {
 
       await this.userRepo.save(user);
 
-      const adminMail = this.configService.get<string>('ADMIN_EMAIL')!;
-
-      await this.mailService.sendVerificationEmail(user.email, token);
-      await this.mailService.sendAdminApprovalRequest(adminMail, user.email);
-
       return {
         message: 'Admin registered successfully, Please verify your email',
       };
@@ -227,7 +222,10 @@ export class AuthService {
       const adminMail = this.configService.get<string>('ADMIN_EMAIL')!;
 
       await this.mailService.sendVerificationEmail(user.email, token);
-      await this.mailService.sendAdminApprovalRequest(adminMail, user.email);
+      await this.mailService.sendRecruiterApprovalRequest(
+        adminMail,
+        user.email,
+      );
 
       return {
         message: 'Recruiter registered successfully, Please verify your email',

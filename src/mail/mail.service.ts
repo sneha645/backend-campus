@@ -25,7 +25,7 @@ export class MailService {
     return this.sendMail(email, 'Email Verification', html);
   }
 
-  async sendAdminApprovalRequest(email: string, recruiterMail: string) {
+  async sendRecruiterApprovalRequest(email: string, recruiterMail: string) {
     const html = `
   <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
     

@@ -53,6 +53,7 @@ export class RecruiterController {
     );
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('getCompanyProfile')
   @ApiOperation({ summary: 'Get company profile' })
   @ApiResponse({ status: 200, description: 'Profile fetched successfully' })

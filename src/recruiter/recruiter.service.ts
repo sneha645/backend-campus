@@ -77,11 +77,11 @@ export class RecruiterService {
       where: { user_id: userId },
       relations: ['company'],
     });
-    // if (!user || !user.company) {
-    //   throw new NotFoundException('Company profile not found');
-    // }
-    // delete (user.company as any).user;
-    // return user.company;
+    if (!user || !user.company) {
+      throw new NotFoundException('Company profile not found');
+    }
+    delete (user.company as any).user;
+    return user.company;
   }
 
   async createJob(companyId: string, dto: JobDto) {
