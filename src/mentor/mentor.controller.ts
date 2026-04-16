@@ -131,6 +131,16 @@ export class MentorController {
     return this.mentorService.createAssignment(assignmentDto, req.user.userId);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('get-assignments')
+  @ApiOperation({ summary: 'Get all assignments' })
+  @ApiResponse({ status: 200, description: 'List of assignments' })
+  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async getAllAssignments(@Request() req: any): Promise<any> {
+    return this.mentorService.getAllAssignments(req.user.userId);
+  }
+
   @Get('submitted-assignments/:id')
   @ApiOperation({ summary: 'Get all submitted assignments' })
   @ApiResponse({ status: 200, description: 'List of submitted assignments' })
@@ -140,7 +150,7 @@ export class MentorController {
     return this.mentorService.getSubmittedAssignments(id);
   }
 
-  @Patch('submitted-assignments/:id')
+  @Post('approve-assignment/:id')
   @ApiOperation({ summary: 'Approve submitted assignment' })
   @ApiResponse({
     status: 200,
@@ -148,11 +158,20 @@ export class MentorController {
   })
   @ApiResponse({ status: 400, description: 'Invalid request' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
-  async approveSubmittedAssignment(
-    @Param('id') id: string,
-    @Body() dto: { status: 'approved' | 'rejected'; feedback: string },
-  ): Promise<any> {
-    return this.mentorService.approveSubmittedAssignment(id, dto);
+  async approveSubmittedAssignment(@Param('id') id: string): Promise<any> {
+    return this.mentorService.approveSubmittedAssignment(id);
+  }
+
+  @Post('reject-assignment/:id')
+  @ApiOperation({ summary: 'Reject submitted assignment' })
+  @ApiResponse({
+    status: 200,
+    description: 'Submitted assignment rejected successfully',
+  })
+  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async rejectSubmittedAssignment(@Param('id') id: string): Promise<any> {
+    return this.mentorService.rejectSubmittedAssignment(id);
   }
 
   // @UseGuards(JwtAuthGuard)

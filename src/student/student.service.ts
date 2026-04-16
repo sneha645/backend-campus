@@ -320,7 +320,7 @@ async getInternshipFeedbacks(studentId: string): Promise<any> {
       }
 
       const submission = this.submissionRepo.create({
-        fileUrl: file ? `/uploads/images/${file.filename}` : undefined,
+        fileUrl: file ? `/uploads/documents/${file.filename}` : undefined,
         student: { user_id: userId },
         assignment: { assignment_id: assignmentId },
       });

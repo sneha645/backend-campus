@@ -129,6 +129,13 @@ export class MentorService {
     });
   }
 
+  async getAllAssignments(userId: string) {
+    return this.assignmentRepo.find({
+      where: { mentor: { user_id: userId } },
+      relations: ['mentor'],
+    });
+  }
+
   async getSubmittedAssignments(id: string) {
     return this.submissionRepo.find({
       where: { assignment: { assignment_id: id } },
@@ -136,10 +143,7 @@ export class MentorService {
     });
   }
 
-  async approveSubmittedAssignment(
-    id: string,
-    dto: { status: 'approved' | 'rejected'; feedback: string },
-  ) {
+  async approveSubmittedAssignment(id: string) {
     const submission = await this.submissionRepo.findOne({
       where: { submission_id: id },
     });
@@ -147,12 +151,19 @@ export class MentorService {
       throw new NotFoundException('Submission not found');
     }
 
-    if (dto.status === 'approved') {
-      submission.status = 'approved';
-    } else {
-      submission.status = 'rejected';
+    submission.status = 'approved';
+    return this.submissionRepo.save(submission);
+  }
+
+  async rejectSubmittedAssignment(id: string) {
+    const submission = await this.submissionRepo.findOne({
+      where: { submission_id: id },
+    });
+    if (!submission) {
+      throw new NotFoundException('Submission not found');
     }
-    submission.feedback = dto.feedback;
+
+    submission.status = 'rejected';
     return this.submissionRepo.save(submission);
   }
 
