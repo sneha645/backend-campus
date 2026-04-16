@@ -84,6 +84,26 @@ export class StudentController {
     return this.studentService.getMyInternships(req.user.userId);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('getProjectFeedbacks')
+  @ApiOperation({ summary: 'Get all feedbacks' })
+  @ApiResponse({ status: 201, description: 'Feedbacks fetched successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async getProjectFeedbacks(@Request() req: any): Promise<any> {
+    return this.studentService.getProjectFeedbacks(req.user.userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('getInternshipFeedbacks')
+  @ApiOperation({ summary: 'Get all feedbacks' })
+  @ApiResponse({ status: 201, description: 'Feedbacks fetched successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async getInternshipFeedbacks(@Request() req: any): Promise<any> {
+    return this.studentService.getInternshipFeedbacks(req.user.userId);
+  }
+
   //job features
   @UseGuards(JwtAuthGuard)
   @Get('jobs')

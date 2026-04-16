@@ -164,6 +164,38 @@ export class StudentService {
     }
   }
 
+async getProjectFeedbacks(studentId: string): Promise<any> {
+  try {
+    const projects = await this.projectRepo.find({
+      where: { student: { user_id: studentId } },
+    });
+
+    const projectsWithFeedback = projects.filter(
+      (project) => project.feedback && project.feedback.trim() !== ''
+    );
+
+    return projectsWithFeedback;
+  } catch (error) {
+    throw new InternalServerErrorException('Failed to get projects');
+  }
+}
+
+async getInternshipFeedbacks(studentId: string): Promise<any> {
+  try {
+    const internships = await this.internshipRepo.find({
+      where: { student: { user_id: studentId } },
+    });
+
+    const internshipsWithFeedback = internships.filter(
+      (internship) => internship.feedback && internship.feedback.trim() !== ''
+    );
+
+    return internshipsWithFeedback;
+  } catch (error) {
+    throw new InternalServerErrorException('Failed to get projects');
+  }
+}
+
   // async getProfile(studentId: string): Promise<any> {
   //   try {
   //     const student = await this.userRepo.findOne({
