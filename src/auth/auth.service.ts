@@ -27,7 +27,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly mailService: MailService,
     private readonly configService: ConfigService,
-  ) {}
+  ) { }
 
   async findByEmail(email: string) {
     return this.userRepo.findOne({
@@ -82,17 +82,13 @@ export class AuthService {
   async createStudent(createStudentDto: CreateStudentDto): Promise<any> {
     try {
       const { name, email, password, role, year, branch } = createStudentDto;
-      console.log('createStudentDto', createStudentDto);
 
       const existingUser = await this.findByEmail(email);
-      console.log('existingUser', existingUser);
-
       if (existingUser) {
         throw new ConflictException('User already exists');
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
-      console.log('hashedPassword', hashedPassword);
 
       const user = this.userRepo.create({
         name,
@@ -102,25 +98,17 @@ export class AuthService {
         year,
         branch,
       });
-      console.log('user', user);
 
       const token = this.jwtService.sign({
         email: user.email,
         role: user.role,
       });
-      console.log('token', token);
 
       await this.userRepo.save(user);
-      console.log('user saved');
 
       const adminMail = this.configService.get<string>('ADMIN_EMAIL')!;
-      console.log('adminMail', adminMail);
-
       await this.mailService.sendVerificationEmail(user.email, token);
-      console.log('verification email sent');
       await this.mailService.sendStudentApprovalRequest(adminMail, user.email);
-      console.log('approval request sent');
-
       return {
         message: 'Student registered successfully, Please verify your email',
       };
@@ -143,16 +131,13 @@ export class AuthService {
         specialization,
         experience,
       } = createMentorDto;
-      console.log('createMentorDto', createMentorDto);
 
       const existingUser = await this.findByEmail(email);
-      console.log('existingUser', existingUser);
       if (existingUser) {
         throw new ConflictException('User already exists');
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
-      console.log('hashedPassword', hashedPassword);
       const user = this.userRepo.create({
         name,
         email,
@@ -162,25 +147,17 @@ export class AuthService {
         specialization,
         experience,
       });
-      console.log('user', user);
 
       const token = this.jwtService.sign({
         email: user.email,
         role: user.role,
       });
-      console.log('token', token);
 
       await this.userRepo.save(user);
-      console.log('user saved');
 
       const adminMail = this.configService.get<string>('ADMIN_EMAIL')!;
-      console.log('adminMail', adminMail);
-
       await this.mailService.sendVerificationEmail(user.email, token);
-      console.log('verification email sent');
       await this.mailService.sendMentorApprovalRequest(adminMail, user.email);
-      console.log('approval request sent');
-
       return {
         message: 'Mentor registered successfully, Please verify your email',
       };
@@ -216,11 +193,9 @@ export class AuthService {
         role: user.role,
       });
 
-      const response = await this.userRepo.save(user);
-      console.log('response', response);
+      await this.userRepo.save(user);
 
       const adminMail = this.configService.get<string>('ADMIN_EMAIL')!;
-
       await this.mailService.sendVerificationEmail(user.email, token);
       await this.mailService.sendRecruiterApprovalRequest(
         adminMail,
@@ -271,7 +246,6 @@ export class AuthService {
       const { email, password } = authDto;
 
       const user = await this.findByEmail(email);
-
       if (user?.status === 'pending') {
         throw new BadRequestException(
           'User not approved, Please wait for approval',
@@ -325,11 +299,7 @@ export class AuthService {
     try {
       const user = await this.userRepo.findOne({
         where: { user_id: userId },
-        // relations: ['company', 'studentProjects', 'mentorProjects', 'jobs'],
       });
-
-      console.log('user', user);
-
       return user;
     } catch (error) {
       console.log('error', error);

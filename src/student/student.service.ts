@@ -44,7 +44,7 @@ export class StudentService {
     private readonly submissionRepo: Repository<AssignmentSubmission>,
 
     private readonly mailService: MailService,
-  ) {}
+  ) { }
 
   // upload project
   async uploadProject(
@@ -415,6 +415,17 @@ export class StudentService {
       return mentors;
     } catch (error) {
       throw new InternalServerErrorException('Failed to get mentors');
+    }
+  }
+
+  async findStudentByYear(year: string): Promise<any> {
+    try {
+      const students = await this.userRepo.find({
+        where: { role: UserRole.STUDENT, year },
+      });
+      return students;
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to get students');
     }
   }
 }

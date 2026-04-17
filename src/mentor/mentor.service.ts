@@ -7,6 +7,8 @@ import { Internship, InternshipStatus } from 'src/entities/internship.entity';
 import { AssignmentDto } from 'src/dtos/assignment.dto';
 import { Assignment } from 'src/entities/assignment.entity';
 import { AssignmentSubmission } from 'src/entities/assignment_submission.entity';
+import { MailService } from 'src/mail/mail.service';
+import { StudentService } from 'src/student/student.service';
 
 @Injectable()
 export class MentorService {
@@ -25,7 +27,10 @@ export class MentorService {
 
     @InjectRepository(AssignmentSubmission)
     private readonly submissionRepo: Repository<AssignmentSubmission>,
-  ) {}
+    private readonly mailService: MailService,
+
+    private readonly studentService: StudentService,
+  ) { }
 
   async getAllProjects(userId: string) {
     return this.projectRepo.find({
@@ -48,6 +53,7 @@ export class MentorService {
 
     project.status = ProjectStatus.APPROVED;
     project.feedback = dto.feedback;
+    this.mailService.sendProjectApprovalEmail(project.student.email, project.title);
     return this.projectRepo.save(project);
   }
 
@@ -64,6 +70,7 @@ export class MentorService {
 
     project.status = ProjectStatus.REJECTED;
     project.feedback = dto.feedback;
+    this.mailService.sendProjectRejectionEmail(project.student.email, project.title, dto.feedback);
     return this.projectRepo.save(project);
   }
 
@@ -87,6 +94,7 @@ export class MentorService {
 
     internship.status = InternshipStatus.APPROVED;
     internship.feedback = dto.feedback;
+    this.mailService.sendInternshipApprovalEmail(internship.student.email, internship.title);
     return this.internshipRepo.save(internship);
   }
 
@@ -94,18 +102,19 @@ export class MentorService {
     id: string,
     dto: { status: 'rejected'; feedback: string },
   ) {
-    const project = await this.projectRepo.findOne({
-      where: { project_id: id },
+    const internship = await this.internshipRepo.findOne({
+      where: { internship_id: id },
     });
-    if (!project) {
-      throw new NotFoundException('Project not found');
+    if (!internship) {
+      throw new NotFoundException('Internship not found');
     }
 
     if (dto.status === 'rejected') {
-      project.status = ProjectStatus.REJECTED;
+      internship.status = InternshipStatus.REJECTED;
     }
-    project.feedback = dto.feedback;
-    return this.projectRepo.save(project);
+    internship.feedback = dto.feedback;
+    this.mailService.sendInternshipRejectionEmail(internship.student.email, internship.title, dto.feedback);
+    return this.internshipRepo.save(internship);
   }
 
   async getProjectById(id: string) {
@@ -118,11 +127,19 @@ export class MentorService {
 
   async createAssignment(assignmentDto: AssignmentDto, userId: string) {
     const mentor = await this.userRepo.findOne({ where: { user_id: userId } });
-    console.log(mentor);
     if (!mentor) {
       throw new NotFoundException('Mentor not found');
     }
     const assignment = this.assignmentRepo.create(assignmentDto);
+
+    const students = await this.studentService.findStudentByYear(assignmentDto.assignment_assignto);
+    if (!students) {
+      throw new NotFoundException('Students not found');
+    }
+
+    const emails = students.map((student: any) => student.email);
+    this.mailService.sendNewAssignmentEmail(emails, assignment.assignment_title);
+
     return this.assignmentRepo.save({
       ...assignment,
       mentor: { user_id: userId },
@@ -152,6 +169,7 @@ export class MentorService {
     }
 
     submission.status = 'approved';
+    this.mailService.sendAssignmentApprovalEmail(submission.student.email, submission.assignment.assignment_title);
     return this.submissionRepo.save(submission);
   }
 
@@ -164,20 +182,9 @@ export class MentorService {
     }
 
     submission.status = 'rejected';
+    this.mailService.sendAssignmentRejectionEmail(submission.student.email, submission.assignment.assignment_title, submission.feedback);
     return this.submissionRepo.save(submission);
   }
-
-  // async getAllAssignments(userId: string) {
-  //   return this.assignmentRepo.find({
-  //     where: { mentor: { user_id: userId } },
-  //   });
-  // }
-
-  // async getSubmittedAssignments() {
-  //   return this.assignmentRepo.find({
-  //     where: { status: 'submitted' },
-  //   });
-  // }
 
   async getAssignedProjects(userId: string) {
     return this.projectRepo.find({

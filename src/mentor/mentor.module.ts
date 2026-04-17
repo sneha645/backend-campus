@@ -9,6 +9,7 @@ import { User } from 'src/entities/user.entity';
 import { Internship } from 'src/entities/internship.entity';
 import { Assignment } from 'src/entities/assignment.entity';
 import { AssignmentSubmission } from 'src/entities/assignment_submission.entity';
+import { StudentModule } from 'src/student/student.module';
 
 @Module({
   imports: [
@@ -21,9 +22,10 @@ import { AssignmentSubmission } from 'src/entities/assignment_submission.entity'
     ]),
     MailModule,
     AuthModule,
+    StudentModule,
   ],
   providers: [MentorService],
   controllers: [MentorController],
   exports: [MentorService, TypeOrmModule],
 })
-export class MentorModule {}
+export class MentorModule { }

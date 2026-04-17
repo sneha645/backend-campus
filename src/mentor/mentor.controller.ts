@@ -16,7 +16,7 @@ import { AssignmentDto } from 'src/dtos/assignment.dto';
 @ApiTags('Mentor')
 @Controller('mentor')
 export class MentorController {
-  constructor(private readonly mentorService: MentorService) {}
+  constructor(private readonly mentorService: MentorService) { }
 
   @UseGuards(JwtAuthGuard)
   @Get('projects')
@@ -173,23 +173,4 @@ export class MentorController {
   async rejectSubmittedAssignment(@Param('id') id: string): Promise<any> {
     return this.mentorService.rejectSubmittedAssignment(id);
   }
-
-  // @UseGuards(JwtAuthGuard)
-  // @Get('assignments')
-  // @ApiOperation({ summary: 'Get all assignments' })
-  // @ApiResponse({ status: 200, description: 'List of assignments' })
-  // @ApiResponse({ status: 400, description: 'Invalid request' })
-  // @ApiResponse({ status: 500, description: 'Internal server error' })
-  // async getAllAssignments(@Request() req: any): Promise<any> {
-  //   return this.mentorService.getAllAssignments(req.user.userId);
-  // }
-
-  // @Get('submittedAssignments')
-  // @ApiOperation({ summary: 'Get all submitted assignments' })
-  // @ApiResponse({ status: 200, description: 'List of submitted assignments' })
-  // @ApiResponse({ status: 400, description: 'Invalid request' })
-  // @ApiResponse({ status: 500, description: 'Internal server error' })
-  // async getSubmittedAssignments(): Promise<any> {
-  //   return this.mentorService.getSubmittedAssignments();
-  // }
 }

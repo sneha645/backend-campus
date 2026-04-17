@@ -1,22 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Project } from 'src/entities/project.entity';
 import { User, UserRole } from 'src/entities/user.entity';
-import { Internship } from 'src/entities/internship.entity';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class AdminService {
   constructor(
-    @InjectRepository(Project)
-    private readonly projectRepo: Repository<Project>,
-
-    @InjectRepository(Internship)
-    private readonly internshipRepo: Repository<Internship>,
 
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
-  ) {}
+
+    private readonly mailService: MailService,
+  ) { }
 
   async getAllStudents() {
     return this.userRepo.find({
@@ -44,6 +40,7 @@ export class AdminService {
     }
     user.status = 'approved';
     await this.userRepo.save(user);
+    this.mailService.sendUserApprovalEmail(user.email, user.name);
     return { message: 'Approved successfully' };
   }
 
@@ -55,7 +52,8 @@ export class AdminService {
     }
     user.status = 'rejected';
     await this.userRepo.save(user);
-    return { message: ' reject successfully' };
+    this.mailService.sendUserRejectionEmail(user.email, user.name);
+    return { message: ' rejected successfully' };
   }
 
   // async getPendingRecruiters() {

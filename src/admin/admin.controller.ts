@@ -6,7 +6,9 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 @ApiTags('Admin')
 @Controller('admin')
 export class AdminController {
-  constructor(private readonly adminService: AdminService) {}
+  constructor(
+    private readonly adminService: AdminService,
+  ) { }
 
   @UseGuards(JwtAuthGuard)
   @Get('all-students')

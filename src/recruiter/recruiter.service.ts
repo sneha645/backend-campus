@@ -13,6 +13,7 @@ import { Company } from 'src/entities/company.entity';
 import { JobDto } from 'src/dtos/job.dto';
 import { Job } from 'src/entities/job.entity';
 import { Application } from 'src/entities/application.entity';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class RecruiterService {
@@ -31,7 +32,9 @@ export class RecruiterService {
 
     @InjectRepository(Application)
     private readonly applicationRepo: Repository<Application>,
-  ) {}
+
+    private readonly mailService: MailService,
+  ) { }
 
   async findAll() {
     return this.userRepo.find({ where: { role: UserRole.RECRUITER } });
@@ -128,6 +131,12 @@ export class RecruiterService {
     }
     application.status = 'shortlisted';
     const updatedApplication = await this.applicationRepo.save(application);
+    await this.mailService.sendJobShortlistedEmail(
+      updatedApplication.student.email,
+      updatedApplication.student.name,
+      updatedApplication.job.title,
+      updatedApplication.job.company.companyName,
+    );
     return {
       message: 'Application status updated successfully',
       data: updatedApplication,
@@ -142,10 +151,16 @@ export class RecruiterService {
       throw new NotFoundException('Application not found');
     }
     application.status = 'rejected';
-    await this.applicationRepo.save(application);
+    const updatedApplication = await this.applicationRepo.save(application);
+    await this.mailService.sendJobRejectionEmail(
+      updatedApplication.student.email,
+      updatedApplication.student.name,
+      updatedApplication.job.title,
+      updatedApplication.job.company.companyName,
+    );
     return {
       message: 'Application status updated successfully',
-      data: application,
+      data: updatedApplication,
     };
   }
 }

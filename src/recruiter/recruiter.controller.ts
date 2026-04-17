@@ -20,7 +20,7 @@ import { JobDto } from 'src/dtos/job.dto';
 @ApiTags('Recruiter')
 @Controller('recruiter')
 export class RecruiterController {
-  constructor(private readonly recruiterService: RecruiterService) {}
+  constructor(private readonly recruiterService: RecruiterService) { }
 
   @UseGuards(JwtAuthGuard)
   @Get('all')
@@ -32,7 +32,6 @@ export class RecruiterController {
     return this.recruiterService.findAll();
   }
 
-  //create company profile
   @UseGuards(JwtAuthGuard)
   @Post('createCompanyProfile')
   @UseInterceptors(FileInterceptor('companyLogo', multerConfig))
@@ -64,7 +63,6 @@ export class RecruiterController {
     return this.recruiterService.getCompanyProfile(userId);
   }
 
-  //create job
   @UseGuards(JwtAuthGuard)
   @Post('createJob/:companyId')
   @ApiOperation({ summary: 'Create job posting' })
