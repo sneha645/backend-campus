@@ -41,6 +41,9 @@ export class Internship {
   @Column({ nullable: true })
   certificateUrl!: string;
 
+  @Column({ nullable: true })
+  companyName!: string;
+
   @Column({
     type: 'enum',
     enum: InternshipStatus,

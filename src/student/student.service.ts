@@ -17,6 +17,7 @@ import { Job } from 'src/entities/job.entity';
 import { Application } from 'src/entities/application.entity';
 import { Assignment } from 'src/entities/assignment.entity';
 import { AssignmentSubmission } from 'src/entities/assignment_submission.entity';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class StudentService {
@@ -41,6 +42,8 @@ export class StudentService {
 
     @InjectRepository(AssignmentSubmission)
     private readonly submissionRepo: Repository<AssignmentSubmission>,
+
+    private readonly mailService: MailService,
   ) {}
 
   // upload project
@@ -80,6 +83,12 @@ export class StudentService {
 
       const response = await this.projectRepo.save(project);
       console.log('response', response);
+
+      await this.mailService.sendProjectAssignedMail(
+        mentor.email,
+        mentor.name,
+        project.title,
+      );
 
       return {
         message: 'Project uploaded successfully',
@@ -131,6 +140,12 @@ export class StudentService {
       const response = await this.internshipRepo.save(internship);
       console.log('response', response);
 
+      await this.mailService.sendInternshipAssignedMail(
+        mentor.email,
+        mentor.name,
+        internship.title,
+      );
+
       return {
         message: 'Internship uploaded successfully',
         internship: response,
@@ -164,37 +179,38 @@ export class StudentService {
     }
   }
 
-async getProjectFeedbacks(studentId: string): Promise<any> {
-  try {
-    const projects = await this.projectRepo.find({
-      where: { student: { user_id: studentId } },
-    });
+  async getProjectFeedbacks(studentId: string): Promise<any> {
+    try {
+      const projects = await this.projectRepo.find({
+        where: { student: { user_id: studentId } },
+      });
 
-    const projectsWithFeedback = projects.filter(
-      (project) => project.feedback && project.feedback.trim() !== ''
-    );
+      const projectsWithFeedback = projects.filter(
+        (project) => project.feedback && project.feedback.trim() !== '',
+      );
 
-    return projectsWithFeedback;
-  } catch (error) {
-    throw new InternalServerErrorException('Failed to get projects');
+      return projectsWithFeedback;
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to get projects');
+    }
   }
-}
 
-async getInternshipFeedbacks(studentId: string): Promise<any> {
-  try {
-    const internships = await this.internshipRepo.find({
-      where: { student: { user_id: studentId } },
-    });
+  async getInternshipFeedbacks(studentId: string): Promise<any> {
+    try {
+      const internships = await this.internshipRepo.find({
+        where: { student: { user_id: studentId } },
+      });
 
-    const internshipsWithFeedback = internships.filter(
-      (internship) => internship.feedback && internship.feedback.trim() !== ''
-    );
+      const internshipsWithFeedback = internships.filter(
+        (internship) =>
+          internship.feedback && internship.feedback.trim() !== '',
+      );
 
-    return internshipsWithFeedback;
-  } catch (error) {
-    throw new InternalServerErrorException('Failed to get projects');
+      return internshipsWithFeedback;
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to get projects');
+    }
   }
-}
 
   // async getProfile(studentId: string): Promise<any> {
   //   try {

@@ -99,4 +99,76 @@ export class MailService {
 
     return this.sendMail(email, 'Email Verification', html);
   }
+
+  async sendProjectAssignedMail(
+    email: string,
+    mentorName: string,
+    projectTitle: string,
+  ) {
+    const html = `
+  <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
+    
+    <h3>Hello ${mentorName},</h3>
+
+    <p>
+      A new project has been assigned to you.
+    </p>
+
+    <p>
+      <strong>Project Title:</strong> ${projectTitle}
+    </p>
+
+    <p>
+      Please log in to your dashboard to review the project details and start working on it.
+    </p>
+
+    <p>
+      Make sure to check deadlines and requirements carefully.
+    </p>
+
+    <p style="font-size: 12px; color: #777;">
+      This is an automated message. Please do not reply.
+    </p>
+
+  </div>
+  `;
+
+    return this.sendMail(email, 'New Project Assigned', html);
+  }
+
+  async sendInternshipAssignedMail(
+    email: string,
+    mentorName: string,
+    internshipTitle: string,
+  ) {
+    const html = `
+  <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
+    
+    <h3>Hello ${mentorName},</h3>
+
+    <p>
+      A new internship has been assigned to you.
+    </p>
+
+    <p>
+      <strong>Internship Title:</strong> ${internshipTitle}
+    </p>
+
+    <p>
+      Please log in to your dashboard to review the project details and start working on it.
+    </p>
+
+    <p>
+      Make sure to check deadlines and requirements carefully.
+    </p>
+
+    <p style="font-size: 12px; color: #777;">
+      This is an automated message. Please do not reply.
+    </p>
+
+  </div>
+  `;
+
+    return this.sendMail(email, 'New Project Assigned', html);
+  }
 }

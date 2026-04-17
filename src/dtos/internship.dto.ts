@@ -17,7 +17,7 @@ export class UploadInternshipDto {
 
   @IsString()
   @IsNotEmpty()
-  company!: string;
+  companyName!: string;
 
   @IsDateString()
   @IsNotEmpty()
