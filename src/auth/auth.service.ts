@@ -35,7 +35,6 @@ export class AuthService {
     });
   }
 
-  // create admin
   async createAdmin(createAdminDto: {
     name: string;
     email: string;
@@ -78,7 +77,6 @@ export class AuthService {
     }
   }
 
-  // create student
   async createStudent(createStudentDto: CreateStudentDto): Promise<any> {
     try {
       const { name, email, password, role, year, branch } = createStudentDto;
@@ -113,6 +111,7 @@ export class AuthService {
         message: 'Student registered successfully, Please verify your email',
       };
     } catch (error) {
+      console.log('error', error);
       if (error instanceof ConflictException) {
         throw error;
       }
@@ -304,6 +303,24 @@ export class AuthService {
     } catch (error) {
       console.log('error', error);
       throw new InternalServerErrorException('Failed to fetch user');
+    }
+  }
+
+  async resetPassword(email: string, password: string): Promise<any> {
+    try {
+      const user = await this.userRepo.findOne({ where: { email } });
+      if (!user) {
+        throw new BadRequestException('User not found');
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+      user.password = hashedPassword;
+      await this.userRepo.save(user);
+
+      return { message: 'Password reset successful' };
+    } catch (error) {
+      console.log('error', error);
+      throw new InternalServerErrorException('Failed to reset password');
     }
   }
 }

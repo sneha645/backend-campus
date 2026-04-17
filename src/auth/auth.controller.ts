@@ -21,9 +21,8 @@ import { CreateMentorDto } from 'src/dtos/mentor.dto';
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
-  // student registration
   @Post('register-student')
   @ApiOperation({ summary: 'Register a new student' })
   @ApiResponse({ status: 201, description: 'Student registered successfully' })
@@ -36,7 +35,6 @@ export class AuthController {
     return this.authService.createStudent(createStudentDto);
   }
 
-  // recruiter registration
   @Post('register-mentor')
   @ApiOperation({ summary: 'Register a new mentor' })
   @ApiResponse({ status: 201, description: 'Mentor registered successfully' })
@@ -50,7 +48,6 @@ export class AuthController {
     return this.authService.createMentor(createMentorDto);
   }
 
-  // recruiter registration
   @Post('register-recruiter')
   @ApiOperation({ summary: 'Register a new recruiter ' })
   @ApiResponse({
@@ -66,7 +63,6 @@ export class AuthController {
     return this.authService.createRecruiter(createRecruiterDto);
   }
 
-  // user login
   @Post('login')
   @ApiOperation({ summary: 'Login' })
   @ApiResponse({ status: 200, description: 'Login successful' })
@@ -105,5 +101,16 @@ export class AuthController {
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async me(@Request() req: any): Promise<any> {
     return this.authService.me(req.user.userId);
+  }
+
+  @Post('reset-password')
+  @ApiOperation({ summary: 'Reset password' })
+  @ApiResponse({ status: 200, description: 'Password reset successful' })
+  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async resetPassword(
+    @Body() { email, password }: { email: string, password: string },
+  ): Promise<any> {
+    return this.authService.resetPassword(email, password);
   }
 }

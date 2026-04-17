@@ -13,21 +13,21 @@ export class MailService {
     });
   }
 
-  async sendMailToMultiple(
-    recipients: string[],
-    subject: string,
-    html: string
-  ) {
-    const promises = recipients.map((email) =>
-      this.mailerService.sendMail({
-        to: email,
-        subject,
-        html,
-      })
-    );
+  // async sendMailToMultiple(
+  //   recipients: string[],
+  //   subject: string,
+  //   html: string
+  // ) {
+  //   const promises = recipients.map((email) =>
+  //     this.mailerService.sendMail({
+  //       to: email,
+  //       subject,
+  //       html,
+  //     })
+  //   );
 
-    return Promise.all(promises);
-  }
+  //   return Promise.all(promises);
+  // }
 
   async sendVerificationEmail(email: string, token: string) {
     const url = `http://localhost:3000/api/auth/verifyEmail?token=${token}`;
