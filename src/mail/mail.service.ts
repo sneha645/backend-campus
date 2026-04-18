@@ -356,32 +356,32 @@ export class MailService {
     return this.sendMail(email, 'Internship Rejected', html);
   }
 
-  async sendNewAssignmentEmail(
-    emails: { [email: string]: string }[],
-    assignmentName: string,
-  ) {
-    const html = `
-  <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
+  // async sendNewAssignmentEmail(
+  //   emails: { [email: string]: string }[],
+  //   assignmentName: string,
+  // ) {
+  //   const html = `
+  // <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
     
-    <h3>Hello,</h3>
+  //   <h3>Hello,</h3>
 
-    <p>
-      A new assignment "${assignmentName}" has been assigned to you.
-    </p>
+  //   <p>
+  //     A new assignment "${assignmentName}" has been assigned to you.
+  //   </p>
 
-    <p>
-      Please log in to your dashboard to view the assignment details and submit it.
-    </p>
+  //   <p>
+  //     Please log in to your dashboard to view the assignment details and submit it.
+  //   </p>
 
-    <p style="font-size: 12px; color: #777;">
-      This is an automated message. Please do not reply.
-    </p>
+  //   <p style="font-size: 12px; color: #777;">
+  //     This is an automated message. Please do not reply.
+  //   </p>
 
-  </div>
-  `;
+  // </div>
+  // `;
 
-    return this.sendMailToMultiple(emails.map((email) => email.email), 'New Assignment', html);
-  }
+  //   return this.sendMailToMultiple(emails.map((email) => email.email), 'New Assignment', html);
+  // }
 
   async sendAssignmentApprovalEmail(
     email: string,

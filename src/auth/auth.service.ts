@@ -27,7 +27,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly mailService: MailService,
     private readonly configService: ConfigService,
-  ) { }
+  ) {}
 
   async findByEmail(email: string) {
     return this.userRepo.findOne({
@@ -245,25 +245,25 @@ export class AuthService {
       const { email, password } = authDto;
 
       const user = await this.findByEmail(email);
-      if (user?.status === 'pending') {
+      if (!user) {
+        throw new UnauthorizedException('Invalid credentials');
+      }
+
+      if (user.status === 'pending') {
         throw new BadRequestException(
           'User not approved, Please wait for approval',
+        );
+      }
+
+      if (user?.status === 'rejected') {
+        throw new BadRequestException(
+          'User rejected, Please contact admin for more information',
         );
       }
 
       if (user && !user.isVerified) {
         throw new BadRequestException(
           'User not verified, Please verify your email',
-        );
-      }
-
-      if (!user) {
-        throw new UnauthorizedException('Invalid credentials');
-      }
-
-      if (user?.status === 'rejected') {
-        throw new BadRequestException(
-          'User rejected, Please contact admin for more information',
         );
       }
 
@@ -292,6 +292,14 @@ export class AuthService {
       }
       throw new InternalServerErrorException('Failed to login');
     }
+  }
+  catch(error) {
+    console.log('error', error);
+
+    if (error instanceof HttpException) {
+      throw error;
+    }
+    throw new InternalServerErrorException('Failed to login');
   }
 
   async me(userId: string): Promise<any> {

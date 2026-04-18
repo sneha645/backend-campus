@@ -178,7 +178,11 @@ export class StudentController {
     @Request() req: any,
     @Param('assignmentId') assignmentId: string,
   ): Promise<any> {
-    return this.studentService.submitAssignment(file, req.user.userId, assignmentId);
+    return this.studentService.submitAssignment(
+      file,
+      req.user.userId,
+      assignmentId,
+    );
   }
 
   // @UseGuards(JwtAuthGuard)

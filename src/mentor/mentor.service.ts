@@ -138,7 +138,7 @@ export class MentorService {
     }
 
     const emails = students.map((student: any) => student.email);
-    this.mailService.sendNewAssignmentEmail(emails, assignment.assignment_title);
+    // this.mailService.sendNewAssignmentEmail(emails, assignment.assignment_title);
 
     return this.assignmentRepo.save({
       ...assignment,

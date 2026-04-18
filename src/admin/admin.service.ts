@@ -7,12 +7,11 @@ import { MailService } from 'src/mail/mail.service';
 @Injectable()
 export class AdminService {
   constructor(
-
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
 
     private readonly mailService: MailService,
-  ) { }
+  ) {}
 
   async getAllStudents() {
     return this.userRepo.find({
@@ -34,10 +33,10 @@ export class AdminService {
 
   async approve(id: string) {
     const user = await this.userRepo.findOne({ where: { user_id: id } });
-
     if (!user) {
       throw new Error('User not found');
     }
+
     user.status = 'approved';
     await this.userRepo.save(user);
     this.mailService.sendUserApprovalEmail(user.email, user.name);
