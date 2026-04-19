@@ -246,23 +246,23 @@ export class AuthService {
 
       const user = await this.findByEmail(email);
       if (!user) {
-        throw new UnauthorizedException('Invalid credentials');
+        throw new ConflictException('Invalid credentials');
       }
 
       if (user.status === 'pending') {
-        throw new BadRequestException(
+        throw new ConflictException(
           'User not approved, Please wait for approval',
         );
       }
 
       if (user?.status === 'rejected') {
-        throw new BadRequestException(
+        throw new ConflictException(
           'User rejected, Please contact admin for more information',
         );
       }
 
       if (user && !user.isVerified) {
-        throw new BadRequestException(
+        throw new ConflictException(
           'User not verified, Please verify your email',
         );
       }
@@ -270,7 +270,7 @@ export class AuthService {
       const isPasswordValid = await bcrypt.compare(password, user.password);
 
       if (!isPasswordValid) {
-        throw new UnauthorizedException('Invalid credentials');
+        throw new ConflictException('Password is not valid');
       }
 
       const payload = {
@@ -287,19 +287,11 @@ export class AuthService {
       };
     } catch (error) {
       console.log('error', error);
-      if (error instanceof UnauthorizedException) {
+      if (error instanceof ConflictException) {
         throw error;
       }
-      throw new InternalServerErrorException('Failed to login');
+      throw new InternalServerErrorException('Failed to create user');
     }
-  }
-  catch(error) {
-    console.log('error', error);
-
-    if (error instanceof HttpException) {
-      throw error;
-    }
-    throw new InternalServerErrorException('Failed to login');
   }
 
   async me(userId: string): Promise<any> {
