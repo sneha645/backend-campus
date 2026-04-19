@@ -30,7 +30,7 @@ export class MentorService {
     private readonly mailService: MailService,
 
     private readonly studentService: StudentService,
-  ) { }
+  ) {}
 
   async getAllProjects(userId: string) {
     return this.projectRepo.find({
@@ -50,10 +50,14 @@ export class MentorService {
     if (!project) {
       throw new NotFoundException('Project not found');
     }
+    console.log(project);
 
     project.status = ProjectStatus.APPROVED;
     project.feedback = dto.feedback;
-    this.mailService.sendProjectApprovalEmail(project.student.email, project.title);
+    this.mailService.sendProjectApprovalEmail(
+      project.student.email,
+      project.title,
+    );
     return this.projectRepo.save(project);
   }
 
@@ -70,7 +74,11 @@ export class MentorService {
 
     project.status = ProjectStatus.REJECTED;
     project.feedback = dto.feedback;
-    this.mailService.sendProjectRejectionEmail(project.student.email, project.title, dto.feedback);
+    this.mailService.sendProjectRejectionEmail(
+      project.student.email,
+      project.title,
+      dto.feedback,
+    );
     return this.projectRepo.save(project);
   }
 
@@ -94,7 +102,10 @@ export class MentorService {
 
     internship.status = InternshipStatus.APPROVED;
     internship.feedback = dto.feedback;
-    this.mailService.sendInternshipApprovalEmail(internship.student.email, internship.title);
+    this.mailService.sendInternshipApprovalEmail(
+      internship.student.email,
+      internship.title,
+    );
     return this.internshipRepo.save(internship);
   }
 
@@ -113,7 +124,11 @@ export class MentorService {
       internship.status = InternshipStatus.REJECTED;
     }
     internship.feedback = dto.feedback;
-    this.mailService.sendInternshipRejectionEmail(internship.student.email, internship.title, dto.feedback);
+    this.mailService.sendInternshipRejectionEmail(
+      internship.student.email,
+      internship.title,
+      dto.feedback,
+    );
     return this.internshipRepo.save(internship);
   }
 
@@ -132,7 +147,9 @@ export class MentorService {
     }
     const assignment = this.assignmentRepo.create(assignmentDto);
 
-    const students = await this.studentService.findStudentByYear(assignmentDto.assignment_assignto);
+    const students = await this.studentService.findStudentByYear(
+      assignmentDto.assignment_assignto,
+    );
     if (!students) {
       throw new NotFoundException('Students not found');
     }
@@ -169,7 +186,10 @@ export class MentorService {
     }
 
     submission.status = 'approved';
-    this.mailService.sendAssignmentApprovalEmail(submission.student.email, submission.assignment.assignment_title);
+    this.mailService.sendAssignmentApprovalEmail(
+      submission.student.email,
+      submission.assignment.assignment_title,
+    );
     return this.submissionRepo.save(submission);
   }
 
@@ -182,7 +202,11 @@ export class MentorService {
     }
 
     submission.status = 'rejected';
-    this.mailService.sendAssignmentRejectionEmail(submission.student.email, submission.assignment.assignment_title, submission.feedback);
+    this.mailService.sendAssignmentRejectionEmail(
+      submission.student.email,
+      submission.assignment.assignment_title,
+      submission.feedback,
+    );
     return this.submissionRepo.save(submission);
   }
 
