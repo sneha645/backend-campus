@@ -20,7 +20,7 @@ import { JobDto } from 'src/dtos/job.dto';
 @ApiTags('Recruiter')
 @Controller('recruiter')
 export class RecruiterController {
-  constructor(private readonly recruiterService: RecruiterService) { }
+  constructor(private readonly recruiterService: RecruiterService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get('all')

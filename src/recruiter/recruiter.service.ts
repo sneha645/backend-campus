@@ -34,7 +34,7 @@ export class RecruiterService {
     private readonly applicationRepo: Repository<Application>,
 
     private readonly mailService: MailService,
-  ) { }
+  ) {}
 
   async findAll() {
     return this.userRepo.find({ where: { role: UserRole.RECRUITER } });
@@ -76,15 +76,13 @@ export class RecruiterService {
   }
 
   async getCompanyProfile(userId: string) {
-    const user = await this.userRepo.findOne({
-      where: { user_id: userId },
-      relations: ['company'],
+    const company = await this.companyRepo.findOne({
+      where: { user: { user_id: userId } },
     });
-    if (!user || !user.company) {
+    if (!company) {
       throw new NotFoundException('Company profile not found');
     }
-    delete (user.company as any).user;
-    return user.company;
+    return company;
   }
 
   async createJob(companyId: string, dto: JobDto) {
