@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AdminService } from './admin.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -62,5 +62,23 @@ export class AdminController {
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async rejectUser(@Param('id') id: string, @Req() req: any): Promise<any> {
     return this.adminService.reject(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('user/:id')
+  @ApiOperation({ summary: 'Get user by ID' })
+  @ApiResponse({ status: 200, description: 'User fetched successfully' })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  async getUser(@Param('id') id: string): Promise<any> {
+    return this.adminService.getUserById(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('user/:id')
+  @ApiOperation({ summary: 'Delete user' })
+  @ApiResponse({ status: 200, description: 'User deleted successfully' })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  async deleteUser(@Param('id') id: string): Promise<any> {
+    return this.adminService.deleteUser(id);
   }
 }

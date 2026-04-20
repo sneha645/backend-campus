@@ -80,4 +80,22 @@ export class AdminService {
   //   await this.userRepo.save(user);
   //   return { message: 'Student reject successfully' };
   // }
+
+  async getUserById(id: string) {
+    const user = await this.userRepo.findOne({ where: { user_id: id } });
+    if (!user) {
+      throw new Error('User not found');
+    }
+    return user;
+  }
+
+  async deleteUser(id: string) {
+    const user = await this.userRepo.findOne({ where: { user_id: id } });
+    if (!user) {
+      throw new Error('User not found');
+    }
+    user.isDeleted = true;
+    await this.userRepo.save(user);
+    return { message: 'User deleted successfully' };
+  }
 }

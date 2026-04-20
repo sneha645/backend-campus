@@ -44,7 +44,7 @@ export class StudentService {
     private readonly submissionRepo: Repository<AssignmentSubmission>,
 
     private readonly mailService: MailService,
-  ) { }
+  ) {}
 
   // upload project
   async uploadProject(
@@ -212,44 +212,6 @@ export class StudentService {
     }
   }
 
-  // async getProfile(studentId: string): Promise<any> {
-  //   try {
-  //     const student = await this.userRepo.findOne({
-  //       where: { user_id: studentId },
-  //     });
-  //     return student;
-  //   } catch (error) {
-  //     throw new InternalServerErrorException('Failed to get profile');
-  //   }
-  // }
-
-  // async updateProfile(
-  //   updateStudentProfileDto: UpdateStudentProfileDto,
-  //   studentId: string,
-  // ): Promise<any> {
-  //   try {
-  //     const student = await this.userRepo.findOne({
-  //       where: { user_id: studentId },
-  //     });
-
-  //     if (!student) {
-  //       throw new NotFoundException('Student not found');
-  //     }
-
-  //     student.name = updateStudentProfileDto.name;
-  //     student.year = updateStudentProfileDto.year;
-  //     student.branch = updateStudentProfileDto.branch;
-
-  //     const response = await this.userRepo.save(student);
-  //     return {
-  //       message: 'Profile updated successfully',
-  //       student: response,
-  //     };
-  //   } catch (error) {
-  //     throw new InternalServerErrorException('Failed to update profile');
-  //   }
-  // }
-
   //job features
   async getJobs(): Promise<any> {
     try {
@@ -284,6 +246,18 @@ export class StudentService {
     });
 
     return this.applicationRepo.save(application);
+  }
+
+  async getAppliedJobs(userId: string): Promise<any> {
+    try {
+      const applications = await this.applicationRepo.find({
+        where: { student: { user_id: userId }, status: 'applied' },
+        relations: ['job'],
+      });
+      return applications;
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to get applied jobs');
+    }
   }
 
   async getAllAssignments(userId: string): Promise<any> {
@@ -345,65 +319,6 @@ export class StudentService {
       throw new InternalServerErrorException('Failed to submit assignment');
     }
   }
-
-  // async submitAssignment(
-  //   file: Express.Multer.File,
-  //   studentId: string,
-  // ): Promise<any> {
-  //   try {
-  //     const assignment = this.assignmentRepo.create({
-  //       file: file ? `/uploads/images/${file.filename}` : undefined,
-  //       student: { user_id: studentId },
-  //     });
-
-  //     assignment.status = 'submitted';
-  //     assignment.submitted_at = new Date().toISOString();
-  //     const response = await this.assignmentRepo.save(assignment);
-  //     return {
-  //       message: 'Assignment submitted successfully',
-  //       assignment: response,
-  //     };
-  //   } catch (error) {
-  //     throw new InternalServerErrorException('Failed to submit assignment');
-  //   }
-  // }
-
-  // async getAllStudents(): Promise<any> {
-  //   try {
-  //     console.log('working');
-  //     const students = await this.userRepo.find({
-  //       where: { role: 'student' },
-  //     });
-  //     console.log('students', students);
-  //     return students;
-  //   } catch (error) {
-  //     throw new InternalServerErrorException('Failed to get students');
-  //   }
-  // }
-
-  // async getMyApplications(studentId: string): Promise<any> {
-  //   try {
-  //     console.log('working');
-  //     const applications = await this.applicationRepo.find({
-  //       where: { student: { user_id: studentId } },
-  //     });
-  //     console.log('applications', applications);
-  //     return applications;
-  //   } catch (error) {
-  //     throw new InternalServerErrorException('Failed to get applications');
-  //   }
-  // }
-
-  // async getAllJobs(): Promise<any> {
-  //   try {
-  //     console.log('working');
-  //     const jobs = await this.jobRepo.find();
-  //     console.log('jobs', jobs);
-  //     return jobs;
-  //   } catch (error) {
-  //     throw new InternalServerErrorException('Failed to get jobs');
-  //   }
-  // }
 
   async getAllMentors(): Promise<any> {
     try {

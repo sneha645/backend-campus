@@ -130,28 +130,15 @@ export class StudentController {
     return this.studentService.applyJob(jobId, resume, req.user.userId);
   }
 
-  // @UseGuards(JwtAuthGuard)
-  // @Get('getProfile')
-  // @ApiOperation({ summary: 'Get profile' })
-  // @ApiResponse({ status: 201, description: 'Profile fetched successfully' })
-  // @ApiResponse({ status: 400, description: 'Invalid request' })
-  // @ApiResponse({ status: 500, description: 'Internal server error' })
-  // async getProfile(@Request() req: any): Promise<any> {
-  //   return this.studentService.getProfile(req.user.userId);
-  // }
-
-  // @UseGuards(JwtAuthGuard)
-  // @Put('updateProfile')
-  // @ApiOperation({ summary: 'Update profile' })
-  // @ApiResponse({ status: 201, description: 'Profile updated successfully' })
-  // @ApiResponse({ status: 400, description: 'Invalid request' })
-  // @ApiResponse({ status: 500, description: 'Internal server error' })
-  // async updateProfile(
-  //   @Body() updateProfileDto: UpdateStudentProfileDto,
-  //   @Request() req: any,
-  // ): Promise<any> {
-  //   return this.studentService.updateProfile(updateProfileDto, req.user.userId);
-  // }
+  @UseGuards(JwtAuthGuard)
+  @Get('appliedJobs')
+  @ApiOperation({ summary: 'Get all applied jobs' })
+  @ApiResponse({ status: 201, description: 'Applied jobs fetched successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async getAppliedJobs(@Request() req: any): Promise<any> {
+    return this.studentService.getAppliedJobs(req.user.userId);
+  }
 
   @UseGuards(JwtAuthGuard)
   @Get('assignments')
