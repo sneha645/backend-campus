@@ -249,7 +249,7 @@ export class StudentService {
   async getAppliedJobs(userId: string): Promise<any> {
     try {
       const applications = await this.applicationRepo.find({
-        where: { student: { user_id: userId }, status: 'applied' },
+        where: { student: { user_id: userId } },
         relations: ['job'],
       });
       return applications;

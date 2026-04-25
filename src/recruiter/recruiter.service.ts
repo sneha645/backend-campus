@@ -123,12 +123,15 @@ export class RecruiterService {
   async applicantShortlisted(appId: string) {
     const application = await this.applicationRepo.findOne({
       where: { application_id: appId },
+      relations: ['student', 'job'],
     });
+    
     if (!application) {
       throw new NotFoundException('Application not found');
     }
     application.status = 'shortlisted';
     const updatedApplication = await this.applicationRepo.save(application);
+    console.log(updatedApplication);
     await this.mailService.sendJobShortlistedEmail(
       updatedApplication.student.email,
       updatedApplication.student.name,
@@ -144,6 +147,7 @@ export class RecruiterService {
   async applicantRejected(appId: string) {
     const application = await this.applicationRepo.findOne({
       where: { application_id: appId },
+      relations: ['student', 'job'],
     });
     if (!application) {
       throw new NotFoundException('Application not found');
