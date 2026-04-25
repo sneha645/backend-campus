@@ -332,6 +332,25 @@ export class StudentService {
     }
   }
 
+  async getSubmissionByStudentAndAssignment(
+    assignmentId: string,
+    studentId: string,
+  ) {
+    const submission = await this.submissionRepo.findOne({
+      where: {
+        assignment: { assignment_id: assignmentId },
+        student: { user_id: studentId },
+      },
+      relations: ['assignment', 'student', 'mentor'],
+    });
+
+    if (!submission) {
+      throw new NotFoundException('Submission not found');
+    }
+
+    return submission;
+  }
+
   async getAllMentors(): Promise<any> {
     try {
       console.log('working');

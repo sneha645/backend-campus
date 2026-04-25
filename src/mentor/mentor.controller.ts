@@ -16,7 +16,7 @@ import { AssignmentDto } from 'src/dtos/assignment.dto';
 @ApiTags('Mentor')
 @Controller('mentor')
 export class MentorController {
-  constructor(private readonly mentorService: MentorService) { }
+  constructor(private readonly mentorService: MentorService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get('projects')
@@ -160,6 +160,7 @@ export class MentorController {
     return this.mentorService.getSubmittedAssignments(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('approve-assignment/:id')
   @ApiOperation({ summary: 'Approve submitted assignment' })
   @ApiResponse({
@@ -168,8 +169,11 @@ export class MentorController {
   })
   @ApiResponse({ status: 400, description: 'Invalid request' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
-  async approveSubmittedAssignment(@Param('id') id: string): Promise<any> {
-    return this.mentorService.approveSubmittedAssignment(id);
+  async approveSubmittedAssignment(
+    @Param('id') id: string,
+    @Body() dto: { status: 'approved'; score: number; feedback: string },
+  ): Promise<any> {
+    return this.mentorService.approveSubmittedAssignment(id, dto);
   }
 
   @Post('reject-assignment/:id')
@@ -180,7 +184,10 @@ export class MentorController {
   })
   @ApiResponse({ status: 400, description: 'Invalid request' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
-  async rejectSubmittedAssignment(@Param('id') id: string): Promise<any> {
-    return this.mentorService.rejectSubmittedAssignment(id);
+  async rejectSubmittedAssignment(
+    @Param('id') id: string,
+    @Body() dto: { status: 'rejected'; score: number; feedback: string },
+  ): Promise<any> {
+    return this.mentorService.rejectSubmittedAssignment(id, dto);
   }
 }

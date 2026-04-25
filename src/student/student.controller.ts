@@ -24,7 +24,6 @@ import { UpdateStudentProfileDto } from 'src/dtos/updateStudentProfile.dto';
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
-  // upload project
   @UseGuards(JwtAuthGuard)
   @Post('project')
   @UseInterceptors(FileInterceptor('projectImage', multerConfig))
@@ -44,7 +43,6 @@ export class StudentController {
     );
   }
 
-  // upload internship
   @UseGuards(JwtAuthGuard)
   @Post('internship')
   @UseInterceptors(FileInterceptor('certificateImage', multerConfig))
@@ -104,7 +102,6 @@ export class StudentController {
     return this.studentService.getInternshipFeedbacks(req.user.userId);
   }
 
-  //job features
   @UseGuards(JwtAuthGuard)
   @Get('jobs')
   @ApiOperation({ summary: 'Get all jobs' })
@@ -151,6 +148,23 @@ export class StudentController {
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async getAllAssignments(@Request() req: any): Promise<any> {
     return this.studentService.getAllAssignments(req.user.userId);
+  }
+
+
+  @UseGuards(JwtAuthGuard)
+  @Get('assignments/:assignmentId/:studentId')
+  @ApiOperation({ summary: 'Get submission' })
+  @ApiResponse({ status: 200, description: 'Submission fetched successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  getSubmission(
+    @Param('assignmentId') assignmentId: string,
+    @Param('studentId') studentId: string,
+  ) {
+    return this.studentService.getSubmissionByStudentAndAssignment(
+      assignmentId,
+      studentId,
+    );
   }
 
   @UseGuards(JwtAuthGuard)

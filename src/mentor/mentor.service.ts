@@ -189,15 +189,21 @@ export class MentorService {
     });
   }
 
-  async approveSubmittedAssignment(id: string) {
+  async approveSubmittedAssignment(
+    id: string,
+    dto: { status: 'approved'; score: number; feedback: string },
+  ) {
     const submission = await this.submissionRepo.findOne({
       where: { submission_id: id },
+      relations: ['student', 'assignment'],
     });
     if (!submission) {
       throw new NotFoundException('Submission not found');
     }
 
     submission.status = 'approved';
+    submission.score = dto.score;
+    submission.feedback = dto.feedback;
     this.mailService.sendAssignmentApprovalEmail(
       submission.student.email,
       submission.assignment.assignment_title,
@@ -205,15 +211,21 @@ export class MentorService {
     return this.submissionRepo.save(submission);
   }
 
-  async rejectSubmittedAssignment(id: string) {
+  async rejectSubmittedAssignment(
+    id: string,
+    dto: { status: 'rejected'; score: number; feedback: string },
+  ) {
     const submission = await this.submissionRepo.findOne({
       where: { submission_id: id },
+      relations: ['student', 'assignment'],
     });
     if (!submission) {
       throw new NotFoundException('Submission not found');
     }
 
     submission.status = 'rejected';
+    submission.score = dto.score;
+    submission.feedback = dto.feedback;
     this.mailService.sendAssignmentRejectionEmail(
       submission.student.email,
       submission.assignment.assignment_title,
