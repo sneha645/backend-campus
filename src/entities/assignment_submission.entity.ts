@@ -13,7 +13,7 @@ export class AssignmentSubmission {
   @PrimaryGeneratedColumn('uuid')
   submission_id: string;
 
-  @ManyToOne(() => Assignment)
+  @ManyToOne(() => Assignment, (assignment) => assignment.submissions)
   assignment: Assignment;
 
   @ManyToOne(() => User)
@@ -24,13 +24,19 @@ export class AssignmentSubmission {
 
   @Column({
     type: 'enum',
-    enum: ['pending', 'approved', 'rejected'],
-    default: 'pending',
+    enum: ['submitted', 'approved', 'rejected'],
+    default: 'submitted',
   })
-  status: 'pending' | 'approved' | 'rejected';
+  status: 'submitted' | 'approved' | 'rejected';
 
   @Column({ nullable: true })
   feedback: string;
+
+  @Column({ nullable: true })
+  score: number;
+
+  @ManyToOne(() => User)
+  mentor: User;
 
   @CreateDateColumn()
   submittedAt: Date;

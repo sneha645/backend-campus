@@ -45,6 +45,7 @@ import { AssignmentSubmission } from './entities/assignment_submission.entity';
           AssignmentSubmission,
         ],
         synchronize: true,
+        dropSchema: true,
       }),
     }),
     AuthModule,

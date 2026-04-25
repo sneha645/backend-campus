@@ -3,10 +3,12 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from './user.entity';
+import { AssignmentSubmission } from './assignment_submission.entity';
 
 @Entity()
 export class Assignment {
@@ -30,6 +32,9 @@ export class Assignment {
 
   @ManyToOne(() => User, (user) => user.assignments)
   mentor: User;
+
+  @OneToMany(() => AssignmentSubmission, (submission) => submission.assignment)
+  submissions: AssignmentSubmission[];
 
   @CreateDateColumn()
   createdAt: Date;

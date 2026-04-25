@@ -133,7 +133,10 @@ export class StudentController {
   @UseGuards(JwtAuthGuard)
   @Get('appliedJobs')
   @ApiOperation({ summary: 'Get all applied jobs' })
-  @ApiResponse({ status: 201, description: 'Applied jobs fetched successfully' })
+  @ApiResponse({
+    status: 201,
+    description: 'Applied jobs fetched successfully',
+  })
   @ApiResponse({ status: 400, description: 'Invalid request' })
   @ApiResponse({ status: 500, description: 'Internal server error' })
   async getAppliedJobs(@Request() req: any): Promise<any> {
@@ -151,7 +154,7 @@ export class StudentController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('submitAssignment/:assignmentId')
+  @Post('submitAssignment')
   @UseInterceptors(FileInterceptor('file', multerConfig))
   @ApiOperation({ summary: 'Submit an assignment' })
   @ApiResponse({
@@ -163,12 +166,13 @@ export class StudentController {
   async submitAssignment(
     @UploadedFile() file: Express.Multer.File,
     @Request() req: any,
-    @Param('assignmentId') assignmentId: string,
+    @Body() assignmentDto: { assignmentId: string; mentorId: string },
   ): Promise<any> {
     return this.studentService.submitAssignment(
       file,
       req.user.userId,
-      assignmentId,
+      assignmentDto.assignmentId,
+      assignmentDto.mentorId,
     );
   }
 

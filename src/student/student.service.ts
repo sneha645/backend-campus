@@ -46,7 +46,6 @@ export class StudentService {
     private readonly mailService: MailService,
   ) {}
 
-  // upload project
   async uploadProject(
     uploadProjectDto: UploadProjectDto,
     projectImage: Express.Multer.File,
@@ -102,7 +101,6 @@ export class StudentService {
     }
   }
 
-  // upload internship
   async uploadInternship(
     uploadInternshipDto: UploadInternshipDto,
     certificateImage: Express.Multer.File,
@@ -157,6 +155,7 @@ export class StudentService {
       throw new InternalServerErrorException('Failed to upload project');
     }
   }
+
   async getMyProjects(studentId: string): Promise<any> {
     try {
       const projects = await this.projectRepo.find({
@@ -212,7 +211,6 @@ export class StudentService {
     }
   }
 
-  //job features
   async getJobs(): Promise<any> {
     try {
       const jobs = await this.jobRepo.find();
@@ -268,6 +266,7 @@ export class StudentService {
       }
       const assignments = await this.assignmentRepo.find({
         where: { assignment_assignto: user.year },
+        relations: ['mentor'],
       });
       return assignments;
     } catch (error) {
@@ -279,18 +278,27 @@ export class StudentService {
     file: Express.Multer.File,
     userId: string,
     assignmentId: string,
+    mentorId: string,
   ): Promise<any> {
     try {
-      const user = await this.userRepo.findOne({ where: { user_id: userId } });
+      const user = await this.userRepo.findOne({
+        where: { user_id: userId },
+      });
+
       if (!user) {
         throw new NotFoundException('User not found');
       }
 
       const assignment = await this.assignmentRepo.findOne({
-        where: { assignment_id: assignmentId },
+        where: {
+          assignment_id: assignmentId,
+          mentor: { user_id: mentorId },
+        },
+        relations: ['mentor'],
       });
+
       if (!assignment) {
-        throw new NotFoundException('Assignment not found');
+        throw new NotFoundException('Assignment not found for this mentor');
       }
 
       if (assignment.assignment_assignto !== user.year) {
@@ -299,24 +307,28 @@ export class StudentService {
         );
       }
 
-      const exxting = await this.submissionRepo.findOne({
+      const existingSubmission = await this.submissionRepo.findOne({
         where: {
           assignment: { assignment_id: assignmentId },
           student: { user_id: userId },
+          mentor: { user_id: mentorId },
         },
       });
-      if (exxting) {
-        throw new BadRequestException('Already submitted');
+
+      if (existingSubmission) {
+        throw new BadRequestException('Already submitted to this mentor');
       }
 
       const submission = this.submissionRepo.create({
         fileUrl: file ? `/uploads/documents/${file.filename}` : undefined,
         student: { user_id: userId },
         assignment: { assignment_id: assignmentId },
+        mentor: { user_id: mentorId },
       });
-      return this.submissionRepo.save(submission);
+
+      return await this.submissionRepo.save(submission);
     } catch (error) {
-      throw new InternalServerErrorException('Failed to submit assignment');
+      throw error;
     }
   }
 

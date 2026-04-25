@@ -163,28 +163,22 @@ export class MentorService {
     if (!mentor) {
       throw new NotFoundException('Mentor not found');
     }
-    const assignment = this.assignmentRepo.create(assignmentDto);
 
-    const students = await this.studentService.findStudentByYear(
-      assignmentDto.assignment_assignto,
-    );
-    if (!students) {
-      throw new NotFoundException('Students not found');
-    }
-
-    const emails = students.map((student: any) => student.email);
-    // this.mailService.sendNewAssignmentEmail(emails, assignment.assignment_title);
-
-    return this.assignmentRepo.save({
-      ...assignment,
-      mentor: { user_id: userId },
+    const assignment = this.assignmentRepo.create({
+      ...assignmentDto,
+      mentor: mentor,
     });
+
+    return this.assignmentRepo.save(assignment);
   }
 
   async getAllAssignments(userId: string) {
     return this.assignmentRepo.find({
       where: { mentor: { user_id: userId } },
       relations: ['mentor'],
+      order: {
+        createdAt: 'DESC',
+      },
     });
   }
 
