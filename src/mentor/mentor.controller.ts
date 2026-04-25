@@ -49,6 +49,16 @@ export class MentorController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get('assigned-internships')
+  @ApiOperation({ summary: 'Get assigned internships' })
+  @ApiResponse({ status: 200, description: 'List of assigned internships' })
+  @ApiResponse({ status: 400, description: 'Invalid request' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async getAssignedInternships(@Request() req: any): Promise<any> {
+    return this.mentorService.getAssignedInternships(req.user.userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Post('approveProject/:id')
   @ApiOperation({ summary: 'Approve project' })
   @ApiResponse({ status: 200, description: 'Project approved successfully' })

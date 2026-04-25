@@ -3,7 +3,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()
 export class MailService {
-  constructor(private readonly mailerService: MailerService) { }
+  constructor(private readonly mailerService: MailerService) {}
 
   async sendMail(to: string, subject: string, html: string) {
     return this.mailerService.sendMail({
@@ -188,7 +188,6 @@ export class MailService {
     return this.sendMail(email, 'New Project Assigned', html);
   }
 
-
   async sendUserApprovalEmail(email: string, name: string) {
     const html = `
   <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
@@ -212,7 +211,6 @@ export class MailService {
 
     return this.sendMail(email, 'Account Approved', html);
   }
-
 
   async sendUserRejectionEmail(email: string, name: string) {
     const html = `
@@ -238,10 +236,7 @@ export class MailService {
     return this.sendMail(email, 'Account Rejected', html);
   }
 
-  async sendProjectApprovalEmail(
-    email: string,
-    projectName: string,
-  ) {
+  async sendProjectApprovalEmail(email: string, projectName: string) {
     const html = `
   <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
     
@@ -297,10 +292,7 @@ export class MailService {
     return this.sendMail(email, 'Project Rejected', html);
   }
 
-  async sendInternshipApprovalEmail(
-    email: string,
-    internshipName: string,
-  ) {
+  async sendInternshipApprovalEmail(email: string, internshipName: string) {
     const html = `
   <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
     
@@ -362,7 +354,7 @@ export class MailService {
   // ) {
   //   const html = `
   // <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
-    
+
   //   <h3>Hello,</h3>
 
   //   <p>
@@ -383,10 +375,7 @@ export class MailService {
   //   return this.sendMailToMultiple(emails.map((email) => email.email), 'New Assignment', html);
   // }
 
-  async sendAssignmentApprovalEmail(
-    email: string,
-    assignmentName: string,
-  ) {
+  async sendAssignmentApprovalEmail(email: string, assignmentName: string) {
     const html = `
   <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
     
@@ -522,5 +511,4 @@ export class MailService {
 
     return this.sendMail(email, 'Application Update', html);
   }
-
 }

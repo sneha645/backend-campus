@@ -39,6 +39,27 @@ export class MentorService {
     });
   }
 
+  async getAllInternships(userId: string) {
+    return this.internshipRepo.find({
+      where: { mentor: { user_id: userId } },
+      relations: ['student'],
+    });
+  }
+
+  async getAssignedProjects(userId: string) {
+    return this.projectRepo.find({
+      where: { mentor: { user_id: userId } },
+      relations: ['student'],
+    });
+  }
+
+  async getAssignedInternships(userId: string) {
+    return this.internshipRepo.find({
+      where: { mentor: { user_id: userId } },
+      relations: ['student'],
+    });
+  }
+
   async approveProject(
     id: string,
     dto: { status: 'approved'; feedback: string },
@@ -46,14 +67,15 @@ export class MentorService {
     console.log(dto);
     const project = await this.projectRepo.findOne({
       where: { project_id: id },
+      relations: ['student', 'mentor'],
     });
     if (!project) {
       throw new NotFoundException('Project not found');
     }
-    console.log(project);
 
     project.status = ProjectStatus.APPROVED;
     project.feedback = dto.feedback;
+
     this.mailService.sendProjectApprovalEmail(
       project.student.email,
       project.title,
@@ -67,6 +89,7 @@ export class MentorService {
   ) {
     const project = await this.projectRepo.findOne({
       where: { project_id: id },
+      relations: ['student', 'mentor'],
     });
     if (!project) {
       throw new NotFoundException('Project not found');
@@ -82,19 +105,13 @@ export class MentorService {
     return this.projectRepo.save(project);
   }
 
-  async getAllInternships(userId: string) {
-    return this.internshipRepo.find({
-      where: { mentor: { user_id: userId } },
-      relations: ['student'],
-    });
-  }
-
   async approveInternship(
     id: string,
     dto: { status: 'approved'; feedback: string },
   ) {
     const internship = await this.internshipRepo.findOne({
       where: { internship_id: id },
+      relations: ['student', 'mentor'],
     });
     if (!internship) {
       throw new NotFoundException('Internship not found');
@@ -115,6 +132,7 @@ export class MentorService {
   ) {
     const internship = await this.internshipRepo.findOne({
       where: { internship_id: id },
+      relations: ['student', 'mentor'],
     });
     if (!internship) {
       throw new NotFoundException('Internship not found');
@@ -208,12 +226,5 @@ export class MentorService {
       submission.feedback,
     );
     return this.submissionRepo.save(submission);
-  }
-
-  async getAssignedProjects(userId: string) {
-    return this.projectRepo.find({
-      where: { mentor: { user_id: userId } },
-      relations: ['student'],
-    });
   }
 }

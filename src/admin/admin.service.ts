@@ -36,6 +36,9 @@ export class AdminService {
     if (!user) {
       throw new Error('User not found');
     }
+    if(user.status === 'approved'){
+      throw new Error('User already approved');
+    }
 
     user.status = 'approved';
     await this.userRepo.save(user);
@@ -54,8 +57,6 @@ export class AdminService {
     this.mailService.sendUserRejectionEmail(user.email, user.name);
     return { message: ' rejected successfully' };
   }
-
-
 
   async getUserById(id: string) {
     const user = await this.userRepo.findOne({ where: { user_id: id } });
