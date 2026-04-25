@@ -55,31 +55,7 @@ export class AdminService {
     return { message: ' rejected successfully' };
   }
 
-  // async getPendingRecruiters() {
-  //   return this.userRepo.find({
-  //     where: { role: UserRole.RECRUITER, status: 'pending' },
-  //   });
-  // }
 
-  // async approveStudent(id: string) {
-  //   const user = await this.userRepo.findOne({ where: { user_id: id } });
-  //   if (!user) {
-  //     throw new Error('User not found');
-  //   }
-  //   user.status = 'approved';
-  //   await this.userRepo.save(user);
-  //   return { message: 'Student approved successfully' };
-  // }
-
-  // async rejectStudent(id: string) {
-  //   const user = await this.userRepo.findOne({ where: { user_id: id } });
-  //   if (!user) {
-  //     throw new Error('User not found');
-  //   }
-  //   user.status = 'rejected';
-  //   await this.userRepo.save(user);
-  //   return { message: 'Student reject successfully' };
-  // }
 
   async getUserById(id: string) {
     const user = await this.userRepo.findOne({ where: { user_id: id } });
